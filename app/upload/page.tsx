@@ -15,6 +15,7 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [photoType, setPhotoType] = useState<'face' | 'full'>('face')
 
   const handleFile = useCallback((f: File) => {
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(f.type)) {
@@ -61,7 +62,7 @@ export default function UploadPage() {
       const anRes = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl: upData.publicUrl }),
+        body: JSON.stringify({ imageUrl: upData.publicUrl, photoType }),
       })
       const anData = await anRes.json()
       if (!anRes.ok) throw new Error(anData.error || 'AI 分析失败')
@@ -85,14 +86,50 @@ export default function UploadPage() {
       <main className="min-h-screen pt-16 pb-12 flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-md animate-fade-up">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="text-xs tracking-[3px] text-[var(--gold)] mb-3 uppercase">Step 1</div>
             <h1 className="font-serif text-2xl font-medium text-[var(--charcoal)] mb-2">
               上传你的照片
             </h1>
             <p className="text-sm text-[var(--warm-gray)] leading-relaxed">
-              正面清晰照片效果最佳<br />AI 将自动识别脸型、肤色、气质
+              AI 将自动识别脸型、色彩季型和穿搭风格
             </p>
+          </div>
+
+          {/* Photo type selector */}
+          <div className="mb-6 grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setPhotoType('face')}
+              className={`p-4 rounded-2xl border text-left transition-all ${
+                photoType === 'face'
+                  ? 'border-[var(--gold)] bg-[rgba(184,144,96,0.06)]'
+                  : 'border-[var(--border)] bg-[var(--cream)]'
+              }`}
+            >
+              <div className="text-xl mb-2">🤳</div>
+              <div className={`text-sm font-medium mb-1 ${photoType === 'face' ? 'text-[var(--gold)]' : 'text-[var(--charcoal)]'}`}>
+                脸部照片
+              </div>
+              <div className="text-[11px] text-[var(--warm-gray)] leading-relaxed">
+                分析色彩季型、脸型、穿搭风格
+              </div>
+            </button>
+            <button
+              onClick={() => setPhotoType('full')}
+              className={`p-4 rounded-2xl border text-left transition-all ${
+                photoType === 'full'
+                  ? 'border-[var(--gold)] bg-[rgba(184,144,96,0.06)]'
+                  : 'border-[var(--border)] bg-[var(--cream)]'
+              }`}
+            >
+              <div className="text-xl mb-2">🧍</div>
+              <div className={`text-sm font-medium mb-1 ${photoType === 'full' ? 'text-[var(--gold)]' : 'text-[var(--charcoal)]'}`}>
+                全身照片
+              </div>
+              <div className="text-[11px] text-[var(--warm-gray)] leading-relaxed">
+                额外分析身材类型与廓形建议
+              </div>
+            </button>
           </div>
 
           {/* Drop zone */}

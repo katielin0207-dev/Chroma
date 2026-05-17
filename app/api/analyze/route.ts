@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { callQwenVL, ANALYSIS_PROMPT } from '@/lib/qwen'
+import { callQwenVL, ANALYSIS_PROMPT, ANALYSIS_PROMPT_FACE_ONLY } from '@/lib/qwen'
 import { parseAnalysisResult, ParseError } from '@/lib/parse-analysis'
 
 export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
   try {
-    const { imageUrl } = await req.json()
+    const { imageUrl, photoType } = await req.json()
 
     if (!imageUrl || typeof imageUrl !== 'string') {
       return NextResponse.json({ error: '请提供图片 URL' }, { status: 400 })
     }
 
-    const rawText = await callQwenVL(imageUrl, ANALYSIS_PROMPT)
+    const prompt = photoType === 'full' ? ANALYSIS_PROMPT : ANALYSIS_PROMPT_FACE_ONLY
+    const rawText = await callQwenVL(imageUrl, prompt)
 
     // Check if Qwen refused (non-face image)
     if (

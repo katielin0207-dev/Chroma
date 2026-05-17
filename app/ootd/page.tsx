@@ -12,6 +12,73 @@ interface UploadedItem {
   publicUrl?: string
 }
 
+function PaywallGate({ onUnlock }: { onUnlock: () => void }) {
+  return (
+    <div className="min-h-screen pt-16 pb-20 px-4 max-w-lg mx-auto flex flex-col items-center justify-center">
+      <div className="w-full animate-fade-up">
+        <div className="text-center mb-8">
+          <div className="text-xs tracking-[3px] text-[var(--terra)] mb-3 uppercase">Premium Feature</div>
+          <h1 className="font-serif text-2xl font-medium text-[var(--charcoal)] mb-2">衣橱诊断 · OOTD 搭配</h1>
+          <p className="text-sm text-[var(--warm-gray)] leading-relaxed">
+            上传单品照片，AI 对照你的色彩季型<br />逐件诊断是否适合，并生成完整搭配方案
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* Single use */}
+          <div className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card flex flex-col items-center text-center">
+            <div className="text-2xl mb-3">🎯</div>
+            <div className="text-xs tracking-[1px] text-[var(--warm-gray)] mb-1">单次使用</div>
+            <div className="font-serif text-3xl font-medium text-[var(--charcoal)] mb-0.5">¥3.9</div>
+            <div className="text-[10px] text-[var(--warm-gray)] mb-4">一次诊断机会</div>
+            <button
+              onClick={onUnlock}
+              className="w-full py-2.5 bg-[var(--charcoal)] text-white text-xs font-medium rounded-xl hover:bg-[var(--gold)] transition-colors"
+            >
+              立即使用
+            </button>
+          </div>
+
+          {/* Annual */}
+          <div className="p-5 bg-[var(--charcoal)] rounded-3xl border border-[var(--charcoal)] shadow-card flex flex-col items-center text-center relative overflow-hidden">
+            <div className="absolute top-3 right-3 px-2 py-0.5 bg-[var(--gold)] text-white text-[9px] rounded-full">推荐</div>
+            <div className="text-2xl mb-3">✨</div>
+            <div className="text-xs tracking-[1px] text-white/60 mb-1">年度会员</div>
+            <div className="font-serif text-3xl font-medium text-white mb-0.5">¥19.9</div>
+            <div className="text-[10px] text-white/50 mb-4">每月最多 10 次</div>
+            <button
+              onClick={onUnlock}
+              className="w-full py-2.5 bg-[var(--gold)] text-white text-xs font-medium rounded-xl hover:bg-[var(--gold-lt)] transition-colors"
+            >
+              开通年费
+            </button>
+          </div>
+        </div>
+
+        <div className="p-4 bg-[var(--cream)] rounded-2xl border border-[var(--border)] mb-6">
+          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">功能包含</div>
+          <div className="space-y-2">
+            {[
+              '上传最多 6 件单品照片',
+              'AI 对照你的色彩季型逐件诊断',
+              '不适合的单品给出替代颜色建议',
+              '生成完整 OOTD 搭配方案',
+            ].map((f) => (
+              <div key={f} className="flex items-center gap-2 text-xs text-[var(--charcoal)]">
+                <span className="text-[var(--green-ok)]">✓</span>{f}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Link href="/results" className="block text-center text-xs text-[var(--warm-gray)] hover:text-[var(--gold)] transition-colors">
+          ← 返回查看形象报告
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 export default function OOTDPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [profile, setProfile] = useState<AnalysisResult | null>(null)
@@ -21,11 +88,18 @@ export default function OOTDPage() {
   const [error, setError] = useState<string | null>(null)
   const [itemResults, setItemResults] = useState<OOTDItem[] | null>(null)
   const [ootdSet, setOotdSet] = useState<OOTDSet | null>(null)
+  const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('huanyan_result')
     if (raw) setProfile(JSON.parse(raw))
+    setUnlocked(localStorage.getItem('ootd_unlocked') === '1')
   }, [])
+
+  const handleUnlock = () => {
+    localStorage.setItem('ootd_unlocked', '1')
+    setUnlocked(true)
+  }
 
   const addFiles = useCallback((files: FileList | null) => {
     if (!files) return
@@ -91,6 +165,15 @@ export default function OOTDPage() {
       setLoading(false)
       setLoadingMsg('')
     }
+  }
+
+  if (!unlocked) {
+    return (
+      <>
+        <Navbar />
+        <PaywallGate onUnlock={handleUnlock} />
+      </>
+    )
   }
 
   return (

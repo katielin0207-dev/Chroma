@@ -7,7 +7,7 @@ import { AnalysisResult } from '@/types/analysis'
 import { Navbar } from '@/components/common/Navbar'
 import { ColorSwatch } from '@/components/results/ColorSwatch'
 
-const NAV_SECTIONS = ['色彩季型', '脸型分析', '身材分析', '穿搭风格', '场合建议']
+const ALL_NAV_SECTIONS = ['色彩季型', '脸型分析', '身材分析', '穿搭风格', '场合建议']
 
 export default function ResultsPage() {
   const router = useRouter()
@@ -68,6 +68,10 @@ export default function ResultsPage() {
   }
 
   const { colorSeason, faceShape, bodyShape, style, occasions } = result
+  const hasBodyShape = !!(bodyShape?.bodyShape && bodyShape.bodyShape.trim() !== '')
+  const navSections = hasBodyShape
+    ? ALL_NAV_SECTIONS
+    : ALL_NAV_SECTIONS.filter((s) => s !== '身材分析')
 
   return (
     <>
@@ -76,7 +80,7 @@ export default function ResultsPage() {
       {/* Sticky section nav */}
       <div className="fixed top-[49px] left-0 right-0 z-40 bg-[var(--bg)] border-b border-[var(--border)] overflow-x-auto no-scrollbar">
         <div className="flex items-center px-4 py-2 gap-1 min-w-max">
-          {NAV_SECTIONS.map((label, i) => (
+          {navSections.map((label, i) => (
             <button
               key={i}
               onClick={() => scrollTo(i)}
@@ -108,9 +112,9 @@ export default function ResultsPage() {
               {colorSeason.season}
             </span>
           </div>
-          <div className="flex gap-2 text-xs text-[var(--warm-gray)]">
+          <div className="flex gap-2 text-xs text-[var(--warm-gray)] flex-wrap">
             <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{faceShape.faceShape}</span>
-            <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{bodyShape.bodyShape}</span>
+            {hasBodyShape && <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{bodyShape.bodyShape}</span>}
             <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{style.primaryStyle}</span>
           </div>
         </div>
@@ -166,33 +170,35 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        {/* Section 2: Body Shape */}
-        <section ref={(el) => { sectionRefs.current[2] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-          <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">身材分析</div>
-          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{bodyShape.bodyShape}</h2>
-          <p className="text-sm text-[var(--warm-gray)] mb-4 leading-relaxed">{bodyShape.description}</p>
+        {/* Section 2: Body Shape — only shown when full-body photo was analyzed */}
+        {hasBodyShape && (
+          <section ref={(el) => { sectionRefs.current[2] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
+            <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">身材分析</div>
+            <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{bodyShape.bodyShape}</h2>
+            <p className="text-sm text-[var(--warm-gray)] mb-4 leading-relaxed">{bodyShape.description}</p>
 
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="p-3 rounded-xl border bg-white border-[var(--border)]" style={{ borderColor: 'rgba(90,138,96,0.2)', background: 'rgba(90,138,96,0.04)' }}>
-              <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--green-ok)' }}>✓ 推荐廓形</div>
-              <ul className="space-y-1 text-xs text-[var(--charcoal)]">
-                {bodyShape.silhouetteRecs.map((s) => <li key={s}>· {s}</li>)}
-              </ul>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="p-3 rounded-xl border bg-white border-[var(--border)]" style={{ borderColor: 'rgba(90,138,96,0.2)', background: 'rgba(90,138,96,0.04)' }}>
+                <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--green-ok)' }}>✓ 推荐廓形</div>
+                <ul className="space-y-1 text-xs text-[var(--charcoal)]">
+                  {bodyShape.silhouetteRecs.map((s) => <li key={s}>· {s}</li>)}
+                </ul>
+              </div>
+              <div className="p-3 rounded-xl border" style={{ borderColor: 'rgba(192,80,64,0.15)', background: 'rgba(192,80,64,0.04)' }}>
+                <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--red-no)' }}>✗ 避免廓形</div>
+                <ul className="space-y-1 text-xs text-[var(--charcoal)]">
+                  {bodyShape.avoidSilhouettes.map((s) => <li key={s}>· {s}</li>)}
+                </ul>
+              </div>
             </div>
-            <div className="p-3 rounded-xl border" style={{ borderColor: 'rgba(192,80,64,0.15)', background: 'rgba(192,80,64,0.04)' }}>
-              <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--red-no)' }}>✗ 避免廓形</div>
-              <ul className="space-y-1 text-xs text-[var(--charcoal)]">
-                {bodyShape.avoidSilhouettes.map((s) => <li key={s}>· {s}</li>)}
-              </ul>
-            </div>
-          </div>
 
-          {bodyShape.expertTip && (
-            <div className="px-4 py-3 bg-white rounded-xl border-l-2 border-[var(--gold)] text-xs text-[var(--warm-gray)] leading-relaxed">
-              <span className="text-[var(--gold)] font-medium">专业提示：</span>{bodyShape.expertTip}
-            </div>
-          )}
-        </section>
+            {bodyShape.expertTip && (
+              <div className="px-4 py-3 bg-white rounded-xl border-l-2 border-[var(--gold)] text-xs text-[var(--warm-gray)] leading-relaxed">
+                <span className="text-[var(--gold)] font-medium">专业提示：</span>{bodyShape.expertTip}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Section 3: Style */}
         <section ref={(el) => { sectionRefs.current[3] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">

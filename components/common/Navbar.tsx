@@ -6,12 +6,13 @@ export function Navbar() {
       <Link href="/" className="font-serif text-[var(--charcoal)] text-lg tracking-tight">
         焕颜<span className="text-[var(--gold)]">AI</span>
       </Link>
-      <Link
-        href="/upload"
-        className="px-4 py-1.5 bg-[var(--charcoal)] text-white text-sm rounded-full hover:bg-[var(--gold)] transition-colors duration-200"
+      <a
+        href="mailto:katielin0207@gmail.com?subject=焕颜AI反馈&body=你好，我想反馈：%0A%0A"
+        className="flex items-center gap-1.5 px-4 py-1.5 border border-[var(--border)] text-[var(--warm-gray)] text-sm rounded-full hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors duration-200"
       >
-        免费测试
-      </Link>
+        <span className="text-base leading-none">✉</span>
+        <span>反馈</span>
+      </a>
     </nav>
   )
 }
