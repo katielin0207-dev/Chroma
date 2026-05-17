@@ -106,7 +106,10 @@ export default function UploadPage() {
                   : 'border-[var(--border)] bg-[var(--cream)]'
               }`}
             >
-              <div className="text-xl mb-2">🤳</div>
+              <svg className="mb-2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{color: photoType === 'face' ? 'var(--gold)' : 'var(--charcoal)'}}>
+                <circle cx="12" cy="9" r="4"/>
+                <path d="M6 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+              </svg>
               <div className={`text-sm font-medium mb-1 ${photoType === 'face' ? 'text-[var(--gold)]' : 'text-[var(--charcoal)]'}`}>
                 脸部照片
               </div>
@@ -122,7 +125,13 @@ export default function UploadPage() {
                   : 'border-[var(--border)] bg-[var(--cream)]'
               }`}
             >
-              <div className="text-xl mb-2">🧍</div>
+              <svg className="mb-2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{color: photoType === 'full' ? 'var(--gold)' : 'var(--charcoal)'}}>
+                <circle cx="12" cy="4" r="2.5"/>
+                <line x1="12" y1="7" x2="12" y2="16"/>
+                <line x1="7" y1="10" x2="17" y2="10"/>
+                <line x1="12" y1="16" x2="9" y2="22"/>
+                <line x1="12" y1="16" x2="15" y2="22"/>
+              </svg>
               <div className={`text-sm font-medium mb-1 ${photoType === 'full' ? 'text-[var(--gold)]' : 'text-[var(--charcoal)]'}`}>
                 全身照片
               </div>
@@ -170,8 +179,11 @@ export default function UploadPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center gap-3 py-16 px-8 text-center">
-                <div className="w-14 h-14 rounded-full bg-[var(--cream)] flex items-center justify-center text-2xl">
-                  📷
+                <div className="w-14 h-14 rounded-full bg-[var(--cream)] flex items-center justify-center text-[var(--gold)]">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 7h4l2-3h6l2 3h4v13H3z"/>
+                    <circle cx="12" cy="13" r="3.5"/>
+                  </svg>
                 </div>
                 <div className="text-sm font-medium text-[var(--charcoal)]">
                   拖放照片到这里

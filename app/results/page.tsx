@@ -9,6 +9,47 @@ import { ColorSwatch } from '@/components/results/ColorSwatch'
 
 const ALL_NAV_SECTIONS = ['色彩季型', '脸型分析', '身材分析', '穿搭风格', '场合建议']
 
+function OccasionIcon({ occasion }: { occasion: string }) {
+  const common = {
+    width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 1.3,
+    strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
+  }
+  if (occasion === '职场') {
+    return (
+      <svg {...common}>
+        <rect x="3" y="8" width="18" height="12" rx="1"/>
+        <path d="M9 8V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2"/>
+        <line x1="3" y1="13" x2="21" y2="13"/>
+      </svg>
+    )
+  }
+  if (occasion === '约会') {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="2"/>
+        <path d="M12 5c-2 0-3 1.5-3 3s1 3 3 3 3-1.5 3-3-1-3-3-3z"/>
+        <path d="M19 12c0-2-1.5-3-3-3s-3 1-3 3 1.5 3 3 3 3-1 3-3z"/>
+        <path d="M12 19c2 0 3-1.5 3-3s-1-3-3-3-3 1.5-3 3 1 3 3 3z"/>
+        <path d="M5 12c0 2 1.5 3 3 3s3-1 3-3-1.5-3-3-3-3 1-3 3z"/>
+      </svg>
+    )
+  }
+  return (
+    <svg {...common}>
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="5"/>
+      <line x1="12" y1="19" x2="12" y2="22"/>
+      <line x1="4.93" y1="4.93" x2="7.05" y2="7.05"/>
+      <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+      <line x1="2" y1="12" x2="5" y2="12"/>
+      <line x1="19" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="19.07" x2="7.05" y2="16.95"/>
+      <line x1="16.95" y1="7.05" x2="19.07" y2="4.93"/>
+    </svg>
+  )
+}
+
 export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AnalysisResult | null>(null)
@@ -240,8 +281,9 @@ export default function ResultsPage() {
           <div className="space-y-3">
             {occasions.map((occ) => (
               <div key={occ.occasion} className="p-4 bg-white rounded-2xl border border-[var(--border)]">
-                <div className="text-xs font-medium text-[var(--charcoal)] mb-1.5">
-                  {occ.occasion === '职场' ? '💼' : occ.occasion === '约会' ? '🌸' : '☀️'} {occ.occasion}
+                <div className="text-xs font-medium text-[var(--charcoal)] mb-1.5 flex items-center gap-1.5">
+                  <OccasionIcon occasion={occ.occasion} />
+                  {occ.occasion}
                 </div>
                 <div className="text-sm text-[var(--charcoal)] mb-2">{occ.outfit}</div>
                 <div className="flex gap-2 mb-2">

@@ -27,7 +27,11 @@ function PaywallGate({ onUnlock }: { onUnlock: () => void }) {
         <div className="grid grid-cols-2 gap-3 mb-6">
           {/* Single use */}
           <div className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card flex flex-col items-center text-center">
-            <div className="text-2xl mb-3">🎯</div>
+            <svg className="mb-3 text-[var(--charcoal)]" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+            </svg>
             <div className="text-xs tracking-[1px] text-[var(--warm-gray)] mb-1">单次使用</div>
             <div className="font-serif text-3xl font-medium text-[var(--charcoal)] mb-0.5">¥3.9</div>
             <div className="text-[10px] text-[var(--warm-gray)] mb-4">一次诊断机会</div>
@@ -42,7 +46,9 @@ function PaywallGate({ onUnlock }: { onUnlock: () => void }) {
           {/* Annual */}
           <div className="p-5 bg-[var(--charcoal)] rounded-3xl border border-[var(--charcoal)] shadow-card flex flex-col items-center text-center relative overflow-hidden">
             <div className="absolute top-3 right-3 px-2 py-0.5 bg-[var(--gold)] text-white text-[9px] rounded-full">推荐</div>
-            <div className="text-2xl mb-3">✨</div>
+            <svg className="mb-3 text-[var(--gold)]" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2 L13.5 9 L20 10 L13.5 11.5 L12 22 L10.5 11.5 L4 10 L10.5 9 Z"/>
+            </svg>
             <div className="text-xs tracking-[1px] text-white/60 mb-1">年度会员</div>
             <div className="font-serif text-3xl font-medium text-white mb-0.5">¥19.9</div>
             <div className="text-[10px] text-white/50 mb-4">每月最多 10 次</div>
