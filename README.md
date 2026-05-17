@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chroma — 焕颜AI
 
-## Getting Started
+AI-powered personal image analysis. Upload a portrait photo and get your color season, face shape, body type analysis, and a complete wardrobe diagnosis.
 
-First, run the development server:
+## Features
+
+- **色彩季型** — 12-season color analysis with personalized palette swatches
+- **脸型分析** — Face shape detection with neckline & hairstyle recommendations
+- **身材分析** — Body type analysis with silhouette guidance
+- **穿搭风格** — Style profile with outfit formula
+- **场合建议** — Occasion-based outfit sets with styling logic
+- **衣橱诊断** — Upload clothing photos → AI judges compatibility → builds complete OOTD looks
+
+## Tech Stack
+
+- **Next.js 14** (App Router, TypeScript)
+- **通义千问VL** (Qwen Vision Language API via DashScope)
+- **Supabase Storage** (portrait & clothing image hosting)
+- **Tailwind CSS** (warm cream/gold design system)
+
+## Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local
+# Fill in your API keys in .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+QWEN_API_KEY=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `.env.local.example` for details.
