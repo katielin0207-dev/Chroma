@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { callQwenVL, ANALYSIS_PROMPT, ANALYSIS_PROMPT_FACE_ONLY } from '@/lib/qwen'
 import { parseAnalysisResult, ParseError } from '@/lib/parse-analysis'
 
-export const maxDuration = 60
+// Edge runtime: 30s timeout even on Vercel Hobby (vs 10s serverless limit)
+// Qwen VL typically takes 15–25s — serverless was silently timing out at 10s
+export const runtime = 'edge'
+export const maxDuration = 30
 
 export async function POST(req: NextRequest) {
   try {
