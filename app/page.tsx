@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { Navbar } from '@/components/common/Navbar'
 import { FirstVisitGate } from '@/components/common/FirstVisitGate'
 
@@ -44,7 +45,7 @@ const FEATURES = [
 export default function HomePage() {
   return (
     <>
-      <FirstVisitGate />
+      <Suspense><FirstVisitGate /></Suspense>
       <Navbar />
       <main className="pt-12">
         {/* HERO */}
