@@ -30,6 +30,17 @@ export async function POST(req: NextRequest) {
 
     const result = parseAnalysisResult(rawText)
 
+    // Force clear bodyShape for face-only photos (Qwen sometimes ignores the empty-schema hint)
+    if (photoType !== 'full') {
+      result.bodyShape = {
+        bodyShape: '',
+        description: '',
+        silhouetteRecs: [],
+        avoidSilhouettes: [],
+        expertTip: '',
+      }
+    }
+
     return NextResponse.json({ result })
   } catch (err) {
     if (err instanceof ParseError) {
