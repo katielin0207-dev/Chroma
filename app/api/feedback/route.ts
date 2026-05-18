@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const FEEDBACK_EMAIL = 'katielin0207@gmail.com'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,26 +12,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '反馈过长（最多 2000 字）' }, { status: 400 })
     }
 
-    const res = await fetch(`https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        _subject: '焕颜AI 用户反馈',
-        _template: 'box',
-        _captcha: 'false',
-        反馈内容: message.trim(),
-        联系方式: contact?.trim() || '（未填写）',
-        提交时间: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
-      }),
+    const supabase = getSupabaseAdmin()
+    const { error } = await supabase.from('feedback').insert({
+      message: message.trim(),
+      contact: contact?.trim() || null,
     })
 
-    if (!res.ok) {
-      const text = await res.text()
-      console.error('FormSubmit failed:', res.status, text)
-      throw new Error('转发服务失败')
+    if (error) {
+      console.error('Supabase feedback insert error:', error)
+      return NextResponse.json({ error: '发送失败，请稍后重试' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
