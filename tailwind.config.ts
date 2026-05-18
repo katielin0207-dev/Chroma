@@ -29,11 +29,16 @@ const config: Config = {
       animation: {
         "spin-slow": "spin 1.2s linear infinite",
         "fade-up": "fadeUp 0.4s ease-out both",
+        "bounce-slow": "bounceSlow 2s ease-in-out infinite",
       },
       keyframes: {
         fadeUp: {
           "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        bounceSlow: {
+          "0%, 100%": { transform: "translateY(0)", opacity: "0.4" },
+          "50%": { transform: "translateY(6px)", opacity: "1" },
         },
       },
       fontFamily: {
