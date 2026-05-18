@@ -14,6 +14,7 @@ export interface FaceShapeAnalysis {
   characteristics: string[]
   hairstyleRecs: string[]
   necklineRecs: NecklineRec[]
+  avoidNecklineRecs?: NecklineRec[]
 }
 
 export interface ColorDimensions {

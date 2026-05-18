@@ -225,12 +225,38 @@ export default function ResultsPage() {
             ))}
           </div>
 
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✦ 发型建议</div>
+          {faceShape.avoidNecklineRecs && faceShape.avoidNecklineRecs.length > 0 && (
+            <>
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✗ 不适合的领型</div>
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {faceShape.avoidNecklineRecs.map((n) => (
+                  <div key={n.name} className="p-3 bg-white rounded-xl text-center border" style={{ borderColor: 'rgba(192,80,64,0.2)', background: 'rgba(192,80,64,0.03)' }}>
+                    <div className="font-medium text-sm text-[var(--charcoal)] mb-1">{n.name}</div>
+                    <div className="text-[10px] leading-tight" style={{ color: 'var(--red-no)', opacity: 0.8 }}>{n.why}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 发型建议</div>
+          <div className="text-[10px] text-[var(--warm-gray)] mb-3 leading-relaxed">
+            点击发型名称可在小红书查看图片参考
+          </div>
           <div className="flex flex-wrap gap-2">
             {faceShape.hairstyleRecs.map((h) => (
-              <span key={h} className="px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)]">
+              <a
+                key={h}
+                href={`https://www.xiaohongshu.com/explore?keyword=${encodeURIComponent(h + ' 发型 参考')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
+              >
                 {h}
-              </span>
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 10L10 2M10 2H5M10 2V7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
             ))}
           </div>
         </section>
