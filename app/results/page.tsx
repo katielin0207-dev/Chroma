@@ -9,6 +9,141 @@ import { ColorSwatch } from '@/components/results/ColorSwatch'
 
 const ALL_NAV_SECTIONS = ['色彩季型', '脸型分析', '身材分析', '穿搭风格', '场合建议']
 
+// ---------------------------------------------------------------------------
+// Off-screen summary card — designed for html2canvas capture
+// ---------------------------------------------------------------------------
+function SummaryShareCard({ result, imageUrl }: { result: AnalysisResult; imageUrl: string | null }) {
+  const { colorSeason, faceShape, style, bodyShape, occasions } = result
+  const hasBody = !!(bodyShape?.bodyShape?.trim())
+
+  return (
+    <div
+      id="summary-share-card"
+      style={{
+        position: 'fixed',
+        left: '-9999px',
+        top: 0,
+        opacity: 0,
+        width: 360,
+        background: '#FAFAF5',
+        fontFamily: "'Noto Sans SC', sans-serif",
+        color: '#1C1814',
+      }}
+    >
+      {/* Header */}
+      <div style={{ background: '#1C1814', padding: '20px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 18, color: '#FAFAF5', fontWeight: 500 }}>
+          焕颜<span style={{ color: '#B89060' }}>AI</span>
+        </div>
+        <div style={{ flex: 1 }} />
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', letterSpacing: 2 }}>个人形象诊断报告</div>
+      </div>
+
+      {/* User + season */}
+      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt="" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', border: '2px solid #B89060' }} crossOrigin="anonymous" />
+        ) : (
+          <div style={{ width: 60, height: 60, borderRadius: '50%', background: '#F2EBE0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>✦</div>
+        )}
+        <div>
+          <div style={{ fontSize: 11, color: '#8C7E72', letterSpacing: 1, marginBottom: 4 }}>COLOR SEASON</div>
+          <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 22, fontWeight: 500, color: '#1C1814' }}>{colorSeason.season}</div>
+          {colorSeason.dimensions && (
+            <div style={{ fontSize: 10, color: '#8C7E72', marginTop: 3 }}>
+              {colorSeason.dimensions.temperature} · {colorSeason.dimensions.brightness} · {colorSeason.dimensions.saturation}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Color swatches */}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid #DDD4C5' }}>
+        <div style={{ fontSize: 9, letterSpacing: 2, color: '#8C7E72', marginBottom: 10 }}>✦ 专属色板</div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {colorSeason.bestColors.slice(0, 6).map((c) => (
+            <div key={c.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: c.hex }} />
+              <span style={{ fontSize: 9, color: '#8C7E72' }}>{c.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Face shape + necklines */}
+      <div style={{ padding: '14px 20px', borderBottom: '1px solid #DDD4C5' }}>
+        <div style={{ fontSize: 9, letterSpacing: 2, color: '#B89060', marginBottom: 6 }}>脸型分析</div>
+        <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>{faceShape.faceShape}</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {faceShape.necklineRecs.slice(0, 3).map((n) => (
+            <div key={n.name} style={{ flex: 1, padding: '8px 6px', background: '#F2EBE0', borderRadius: 8, textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 500 }}>{n.name}</div>
+              <div style={{ fontSize: 9, color: '#8C7E72', marginTop: 2, lineHeight: 1.4 }}>{n.why}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Body shape (if available) */}
+      {hasBody && (
+        <div style={{ padding: '14px 20px', borderBottom: '1px solid #DDD4C5' }}>
+          <div style={{ fontSize: 9, letterSpacing: 2, color: '#B89060', marginBottom: 6 }}>身材分析</div>
+          <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 15, fontWeight: 500, marginBottom: 6 }}>{bodyShape.bodyShape}</div>
+          <div style={{ fontSize: 11, color: '#8C7E72', lineHeight: 1.6 }}>
+            推荐：{bodyShape.silhouetteRecs.slice(0, 3).join(' · ')}
+          </div>
+        </div>
+      )}
+
+      {/* Style + keywords */}
+      <div style={{ padding: '14px 20px', borderBottom: '1px solid #DDD4C5' }}>
+        <div style={{ fontSize: 9, letterSpacing: 2, color: '#B89060', marginBottom: 6 }}>穿搭风格</div>
+        <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>{style.primaryStyle}</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+          {style.styleKeywords.map((k) => (
+            <span key={k} style={{ padding: '3px 10px', background: '#B89060', color: '#fff', borderRadius: 20, fontSize: 10 }}>{k}</span>
+          ))}
+        </div>
+        {style.whyItSuitsYou && (
+          <div style={{ marginTop: 8, fontSize: 10, color: '#8C7E72', lineHeight: 1.6, padding: '8px 10px', background: '#F2EBE0', borderRadius: 8 }}>
+            {style.whyItSuitsYou}
+          </div>
+        )}
+      </div>
+
+      {/* Occasions */}
+      <div style={{ padding: '14px 20px' }}>
+        <div style={{ fontSize: 9, letterSpacing: 2, color: '#B89060', marginBottom: 10 }}>场合穿搭建议</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {occasions.map((occ) => (
+            <div key={occ.occasion} style={{ padding: '10px 12px', background: '#F2EBE0', borderRadius: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, marginBottom: 4 }}>{occ.occasion}</div>
+              <div style={{ fontSize: 11, color: '#1C1814', marginBottom: 4 }}>{occ.outfit}</div>
+              <div style={{ display: 'flex', gap: 5, marginBottom: 4 }}>
+                {occ.colors.map((hex, i) => (
+                  <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: hex }} />
+                ))}
+              </div>
+              {occ.logic && (
+                <div style={{ fontSize: 10, color: '#8C7E72' }}>{occ.logic}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ background: '#F2EBE0', padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 13, color: '#8C7E72' }}>焕颜AI</div>
+        <div style={{ fontSize: 9, color: '#8C7E72', letterSpacing: 1 }}>chroma-flax.vercel.app</div>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+
 function OccasionIcon({ occasion }: { occasion: string }) {
   const common = {
     width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none',
@@ -86,13 +221,25 @@ export default function ResultsPage() {
     sectionRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  // Share / download
+  // Share / download — captures the off-screen full summary card
   const handleShare = async () => {
     if (!result) return
     const { default: html2canvas } = await import('html2canvas')
-    const el = document.getElementById('share-card')
+    // Use the dedicated off-screen summary card, not the small header
+    const el = document.getElementById('summary-share-card')
     if (!el) return
-    const canvas = await html2canvas(el, { backgroundColor: '#FAFAF5', scale: 2 })
+    // Temporarily make it visible for capture
+    el.style.left = '0'
+    el.style.opacity = '1'
+    await new Promise((r) => setTimeout(r, 50)) // let paint flush
+    const canvas = await html2canvas(el, {
+      backgroundColor: '#FAFAF5',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    })
+    el.style.left = '-9999px'
+    el.style.opacity = '0'
     const url = canvas.toDataURL('image/png')
     const a = document.createElement('a')
     a.href = url
@@ -350,6 +497,12 @@ export default function ResultsPage() {
             ))}
           </div>
         </section>
+
+        {/* Off-screen full summary card — captured by html2canvas */}
+        <SummaryShareCard
+          result={result}
+          imageUrl={imageUrl}
+        />
 
         {/* Action buttons */}
         <div className="flex flex-col gap-3">
