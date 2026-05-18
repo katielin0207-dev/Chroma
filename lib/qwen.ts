@@ -245,20 +245,36 @@ export async function callQwenVL(
     { text: prompt },
   ]
 
-  const response = await fetch(QWEN_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'qwen-vl-plus',
-      input: {
-        messages: [{ role: 'user', content }],
+  // Hard 27s timeout — fires before Vercel Edge's 30s wall-clock limit
+  // so we get a clean error rather than a silent 504
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 27000)
+
+  let response: Response
+  try {
+    response = await fetch(QWEN_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
       },
-      parameters: { result_format: 'message' },
-    }),
-  })
+      body: JSON.stringify({
+        model: 'qwen-vl-plus',
+        input: {
+          messages: [{ role: 'user', content }],
+        },
+        parameters: { result_format: 'message' },
+      }),
+      signal: controller.signal,
+    })
+  } catch (err) {
+    clearTimeout(timeoutId)
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('AI 分析超时，请重试（建议使用 WiFi 或减少参考图）')
+    }
+    throw err
+  }
+  clearTimeout(timeoutId)
 
   if (!response.ok) {
     const err = await response.text()

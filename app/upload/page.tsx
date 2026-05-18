@@ -124,19 +124,40 @@ export default function UploadPage() {
         )
       }
 
-      // Step 2: analyze
+      // Step 2: analyze — 35s client timeout to prevent infinite spinner
       setCurrentStep(1)
-      const anRes = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageUrl: upData.publicUrl,
-          photoType,
-          styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
-          styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
-        }),
-      })
-      const anData = await anRes.json()
+      const analyzeController = new AbortController()
+      const analyzeTimeout = setTimeout(() => analyzeController.abort(), 35000)
+
+      let anRes: Response
+      try {
+        anRes = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: upData.publicUrl,
+            photoType,
+            styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
+            styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
+          }),
+          signal: analyzeController.signal,
+        })
+      } catch (fetchErr) {
+        clearTimeout(analyzeTimeout)
+        if (fetchErr instanceof Error && fetchErr.name === 'AbortError') {
+          throw new Error('AI 分析超时（超过 35 秒），请重试。建议使用清晰的正面照片。')
+        }
+        throw fetchErr
+      }
+      clearTimeout(analyzeTimeout)
+
+      // Handle non-JSON responses (e.g. Vercel 504 HTML error pages)
+      let anData: { result?: unknown; error?: string }
+      try {
+        anData = await anRes.json()
+      } catch {
+        throw new Error(`服务器错误 (${anRes.status})，请稍后重试`)
+      }
       if (!anRes.ok) throw new Error(anData.error || 'AI 分析失败')
 
       // Step 3: navigate
@@ -331,8 +352,16 @@ export default function UploadPage() {
 
           {/* Error */}
           {error && (
-            <div className="mt-4 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 text-center">
-              {error}
+            <div className="mt-4 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 text-center space-y-2">
+              <div>{error}</div>
+              {(error.includes('超时') || error.includes('失败') || error.includes('服务器')) && (
+                <button
+                  onClick={analyze}
+                  className="mt-1 px-4 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-medium transition-colors"
+                >
+                  重新分析 →
+                </button>
+              )}
             </div>
           )}
 
