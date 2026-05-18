@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Navbar } from '@/components/common/Navbar'
+import { FirstVisitGate } from '@/components/common/FirstVisitGate'
 
 const SEASONS = [
   { name: '暖春', color: '#E8A870', desc: '明亮 · 温暖' },
@@ -43,6 +44,7 @@ const FEATURES = [
 export default function HomePage() {
   return (
     <>
+      <FirstVisitGate />
       <Navbar />
       <main className="pt-12">
         {/* HERO */}

@@ -250,6 +250,16 @@ export default function UploadPage() {
               </div>
             ))}
           </div>
+
+          {/* Back to landing */}
+          <div className="mt-8 text-center">
+            <a
+              href="/?showLanding=1"
+              className="text-xs text-[var(--warm-gray)] hover:text-[var(--gold)] transition-colors underline underline-offset-2"
+            >
+              查看功能介绍
+            </a>
+          </div>
         </div>
       </main>
     </>
