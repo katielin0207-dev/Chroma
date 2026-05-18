@@ -16,9 +16,16 @@ export interface FaceShapeAnalysis {
   necklineRecs: NecklineRec[]
 }
 
+export interface ColorDimensions {
+  temperature: string  // 暖 / 冷 / 中性
+  brightness: string   // 浅 / 中 / 深
+  saturation: string   // 清 / 柔 / 浊
+}
+
 export interface ColorSeasonAnalysis {
   season: string
   description: string
+  dimensions?: ColorDimensions
   bestColors: ColorSwatch[]
   avoidColors: ColorSwatch[]
   coloringPrinciple: string

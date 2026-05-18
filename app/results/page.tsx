@@ -166,6 +166,30 @@ export default function ResultsPage() {
           <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{colorSeason.season}</h2>
           <p className="text-sm text-[var(--warm-gray)] leading-relaxed mb-4">{colorSeason.description}</p>
 
+          {/* Three-dimensional features — Carol Jackson theory transparency */}
+          {colorSeason.dimensions && (
+            <div className="mb-4 p-3 bg-white rounded-xl border border-[var(--border)]">
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">判断依据 · 三维特征</div>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="text-center">
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">色温</div>
+                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.temperature}</div>
+                </div>
+                <div className="text-center border-x border-[var(--border)]">
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">明度</div>
+                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.brightness}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">纯度</div>
+                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.saturation}</div>
+                </div>
+              </div>
+              <div className="mt-2 text-[10px] text-[var(--warm-gray)] text-center leading-relaxed">
+                基于 Carol Jackson 十二色彩季型体系
+              </div>
+            </div>
+          )}
+
           <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✦ 专属色板 · 最佳色彩</div>
           <div className="flex flex-wrap gap-4 mb-4">
             {colorSeason.bestColors.map((c) => <ColorSwatch key={c.name} swatch={c} />)}
