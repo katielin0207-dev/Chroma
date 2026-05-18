@@ -6,14 +6,29 @@ export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
   try {
-    const { imageUrl, photoType } = await req.json()
+    const { imageUrl, photoType, styleDescription, styleImageUrls } = await req.json() as {
+      imageUrl: string
+      photoType?: string
+      styleDescription?: string
+      styleImageUrls?: string[]
+    }
 
     if (!imageUrl || typeof imageUrl !== 'string') {
       return NextResponse.json({ error: '请提供图片 URL' }, { status: 400 })
     }
 
-    const prompt = photoType === 'full' ? ANALYSIS_PROMPT : ANALYSIS_PROMPT_FACE_ONLY
-    const rawText = await callQwenVL(imageUrl, prompt)
+    // Build the base prompt
+    let prompt = photoType === 'full' ? ANALYSIS_PROMPT : ANALYSIS_PROMPT_FACE_ONLY
+
+    // Append style context to the prompt if provided
+    if (styleDescription?.trim()) {
+      prompt += `\n\n【用户风格偏好自述】\n用户本人描述："${styleDescription.trim()}"\n请在判断穿搭风格、场合建议和穿搭公式时，充分参考以上自述，让结果更贴近用户的真实需求和性格。`
+    }
+    if (styleImageUrls && styleImageUrls.length > 0) {
+      prompt += `\n\n【额外参考图说明】\n用户提供了 ${styleImageUrls.length} 张日常穿搭/风格参考图（已在本条消息中作为额外图片发送）。请综合分析这些参考图中的风格偏好、色彩倾向和单品选择，让风格建议更个性化。`
+    }
+
+    const rawText = await callQwenVL(imageUrl, prompt, styleImageUrls)
 
     // Check if Qwen refused (non-face image)
     if (
@@ -30,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const result = parseAnalysisResult(rawText)
 
-    // Force clear bodyShape for face-only photos (Qwen sometimes ignores the empty-schema hint)
+    // Force clear bodyShape for face-only photos
     if (photoType !== 'full') {
       result.bodyShape = {
         bodyShape: '',

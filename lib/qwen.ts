@@ -231,10 +231,19 @@ export const OOTD_PROMPT_TEMPLATE = (
 
 export async function callQwenVL(
   imageUrl: string,
-  prompt: string
+  prompt: string,
+  /** Optional extra images (style refs, outfit photos). Max 2. */
+  extraImageUrls?: string[]
 ): Promise<string> {
   const apiKey = process.env.QWEN_API_KEY
   if (!apiKey) throw new Error('QWEN_API_KEY 未配置')
+
+  // Build the content array: main image first, then extra refs, then the prompt text
+  const content: Array<{ image: string } | { text: string }> = [
+    { image: imageUrl },
+    ...(extraImageUrls ?? []).slice(0, 2).map((u) => ({ image: u })),
+    { text: prompt },
+  ]
 
   const response = await fetch(QWEN_API_URL, {
     method: 'POST',
@@ -245,15 +254,7 @@ export async function callQwenVL(
     body: JSON.stringify({
       model: 'qwen-vl-plus',
       input: {
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { image: imageUrl },
-              { text: prompt },
-            ],
-          },
-        ],
+        messages: [{ role: 'user', content }],
       },
       parameters: { result_format: 'message' },
     }),
@@ -265,12 +266,12 @@ export async function callQwenVL(
   }
 
   const data = await response.json()
-  const content = data?.output?.choices?.[0]?.message?.content
+  const responseContent = data?.output?.choices?.[0]?.message?.content
 
-  if (Array.isArray(content)) {
-    return content.map((c: { text?: string }) => c.text ?? '').join('')
+  if (Array.isArray(responseContent)) {
+    return responseContent.map((c: { text?: string }) => c.text ?? '').join('')
   }
-  if (typeof content === 'string') return content
+  if (typeof responseContent === 'string') return responseContent
 
   throw new Error('Qwen API 返回格式异常')
 }
