@@ -278,9 +278,24 @@ export default function OOTDPage() {
         {/* Results */}
         {itemResults && (
           <div className="space-y-4 animate-fade-up">
-            <div className="text-[10px] tracking-[2px] text-[var(--warm-gray)] px-1">单品兼容分析</div>
+            {/* Legend */}
+            <div className="flex items-center gap-3 px-1 flex-wrap">
+              <span className="text-[10px] tracking-[2px] text-[var(--warm-gray)] mr-1">单品诊断</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] border" style={{ background: 'rgba(90,138,96,0.1)', color: 'var(--green-ok)', borderColor: 'rgba(90,138,96,0.3)' }}>✓ 最适合</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] border" style={{ background: 'rgba(184,144,96,0.1)', color: 'var(--gold)', borderColor: 'rgba(184,144,96,0.3)' }}>△ 可以穿</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] border" style={{ background: 'rgba(192,80,64,0.08)', color: 'var(--red-no)', borderColor: 'rgba(192,80,64,0.25)' }}>✗ 不建议</span>
+            </div>
 
-            {itemResults.map((item, i) => (
+            {itemResults.map((item, i) => {
+              const rating = item.rating ?? (item.isCompatible ? 'best' : 'avoid')
+              const badge =
+                rating === 'best'
+                  ? { label: '✓ 最适合', bg: 'rgba(90,138,96,0.1)', color: 'var(--green-ok)', border: 'rgba(90,138,96,0.3)', reasonBg: 'rgba(90,138,96,0.05)' }
+                  : rating === 'ok'
+                  ? { label: '△ 可以穿', bg: 'rgba(184,144,96,0.1)', color: 'var(--gold)', border: 'rgba(184,144,96,0.3)', reasonBg: 'rgba(184,144,96,0.05)' }
+                  : { label: '✗ 不建议', bg: 'rgba(192,80,64,0.08)', color: 'var(--red-no)', border: 'rgba(192,80,64,0.25)', reasonBg: 'rgba(192,80,64,0.04)' }
+
+              return (
               <div key={i} className="p-4 bg-[var(--cream)] rounded-2xl border border-[var(--border)] shadow-card">
                 <div className="flex items-center gap-3 mb-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -294,19 +309,16 @@ export default function OOTDPage() {
                       <span className="text-sm font-medium text-[var(--charcoal)]">{item.itemName}</span>
                       <span
                         className="px-2 py-0.5 rounded-full text-[10px] border"
-                        style={item.isCompatible
-                          ? { background: 'rgba(90,138,96,0.1)', color: 'var(--green-ok)', borderColor: 'rgba(90,138,96,0.3)' }
-                          : { background: 'rgba(192,80,64,0.08)', color: 'var(--red-no)', borderColor: 'rgba(192,80,64,0.25)' }
-                        }
+                        style={{ background: badge.bg, color: badge.color, borderColor: badge.border }}
                       >
-                        {item.isCompatible ? '✓ 适合你' : '✗ 不建议'}
+                        {badge.label}
                       </span>
                     </div>
                   </div>
                 </div>
                 <div
                   className="text-xs leading-relaxed px-3 py-2 rounded-lg mb-2"
-                  style={{ background: item.isCompatible ? 'rgba(90,138,96,0.05)' : 'rgba(192,80,64,0.04)' }}
+                  style={{ background: badge.reasonBg }}
                 >
                   {item.reason}
                 </div>
@@ -317,7 +329,8 @@ export default function OOTDPage() {
                   </div>
                 )}
               </div>
-            ))}
+              )
+            })}
 
             {/* OOTD Set */}
             {ootdSet && (

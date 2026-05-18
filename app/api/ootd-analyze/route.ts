@@ -30,11 +30,16 @@ export async function POST(req: NextRequest) {
           const fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/)
           const brace = raw.match(/\{[\s\S]*\}/)
           const json = fence?.[1]?.trim() ?? brace?.[0] ?? raw
-          parsed = JSON.parse(json)
+          const obj = JSON.parse(json)
+          // Normalise: support both old isCompatible and new rating
+          if (!obj.rating) {
+            obj.rating = obj.isCompatible ? 'best' : 'avoid'
+          }
+          parsed = obj
         } catch {
           parsed = {
             itemName: '未知单品',
-            isCompatible: false,
+            rating: 'avoid',
             reason: '无法解析 AI 返回结果',
           }
         }
@@ -43,19 +48,19 @@ export async function POST(req: NextRequest) {
       })
     )
 
-    // Build an OOTD set from compatible items
+    // Build an OOTD set from best + ok items (both are wearable)
     let ootdSet: OOTDSet | undefined
-    const compatible = itemResults.filter((i) => i.isCompatible)
-    if (compatible.length >= 2) {
-      const names = compatible.map((i) => i.itemName).join(' + ')
-      const colors = compatible
+    const wearable = itemResults.filter((i) => i.rating === 'best' || i.rating === 'ok')
+    if (wearable.length >= 2) {
+      const names = wearable.map((i) => i.itemName).join(' + ')
+      const colors = wearable
         .flatMap(() => ['#C8A060', '#F0EBE0', '#503820'])
-        .slice(0, compatible.length + 1)
+        .slice(0, wearable.length + 1)
 
       ootdSet = {
-        items: compatible,
+        items: wearable,
         completeOutfit: names,
-        outfitLogic: `以上${compatible.length}件均与你的${userProfile.season}匹配，色调协调可直接搭配穿着`,
+        outfitLogic: `以上${wearable.length}件可一起穿着，${wearable.filter(i => i.rating === 'best').length}件与你的${userProfile.season}完美契合`,
         colorDots: colors,
       }
     }

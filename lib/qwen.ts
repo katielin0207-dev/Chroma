@@ -171,7 +171,11 @@ ${COLOR_RULE}
   ${SHARED_JSON_TAIL}
 }`
 
-// OOTD 单品诊断 — 严格按照季型规则判断，不妥协
+// 中性色 — 任何季型都可以穿（rating: "ok"）
+// 黑白灰在色彩理论中属于无彩色，虽非最优，但无明显冲突
+const UNIVERSAL_NEUTRALS = '黑色、纯白、浅灰、中灰、炭灰、深灰、米白（接近白色的极浅米）'
+
+// OOTD 单品三档诊断：最适合 / 可以穿 / 不建议
 export const OOTD_PROMPT_TEMPLATE = (
   userProfile: { season: string; faceShape: string; bodyShape: string },
   itemCount: number
@@ -181,41 +185,39 @@ export const OOTD_PROMPT_TEMPLATE = (
     can: '依据该季型理论判断',
     cannot: '与该季型色温相反的颜色',
   }
-  return `你是 Carol Jackson 十二色彩季型理论的严格执行者，立场专业绝不妥协。
+  return `你是 Carol Jackson 十二色彩季型顾问，给出专业且实用的三档判断。
 
 【用户色彩季型】${userProfile.season}
+【季型色温】${rules.temp}调
+【最适合的颜色】${rules.can}
+【不建议的颜色】${rules.cannot}
+【任何季型均可穿的中性色】${UNIVERSAL_NEUTRALS}
 
-【该季型硬性规则】
-- 整体色温：${rules.temp}调
-- 适合的颜色：${rules.can}
-- 禁忌的颜色：${rules.cannot}
+【三档判断标准 — 必须严格执行】
+- rating: "best" → 颜色在"最适合"清单内，与季型完美契合
+- rating: "ok"   → 颜色是上方"中性色"之一（黑白灰等无彩色），不冲突但非最优
+- rating: "avoid"→ 颜色在"不建议"清单内，与季型色温明确冲突
 
-【判断流程】严格按以下步骤执行：
-1. 识别衣物的主色（确定色温：暖/冷/中性）
-2. 对照"适合"和"禁忌"清单
-3. 如果衣物颜色色温与用户色温相反 → 必须 isCompatible = false
-4. 如果衣物颜色在"禁忌"清单 → 必须 isCompatible = false
-5. 如果衣物颜色在"适合"清单 → isCompatible = true
+【判断步骤】
+1. 识别衣物主色名称
+2. 判断是否属于中性色（黑/白/灰）→ 如是，rating = "ok"
+3. 否则，对比季型的适合/不建议清单 → 判定 "best" 或 "avoid"
+4. 色温相反的颜色（暖季型遇冷色、冷季型遇暖色）→ 必须 "avoid"
 
-【绝对禁止】
-- 不要因为衣物本身好看就说适合
-- 不要为了让用户开心而妥协
-- 不要用"协调"、"百搭"、"中性"等模糊词蒙混
-- 暖色季型遇到冷色衣物（如海军蓝、宝蓝、玫红、纯黑），必须判定"不建议"
-- 冷色季型遇到暖色衣物（如驼色、芥末黄、砖红、焦糖），必须判定"不建议"
+【reason 写法要求】
+- "best"：说明为何与季型契合（如：暖调砖红与你的暖秋肤底完美呼应）
+- "ok"：说明是中性色可穿，但提示季型色会更加分（如：黑色属中性色可穿，但你的柔夏型穿雾蓝灰会更提气色）
+- "avoid"：说明色温冲突（如：冷调宝蓝与你的暖秋底调相斥，会让肤色显暗）
 
-【次要参考】（仅作辅助）
-- 脸型：${userProfile.faceShape}
-- 身材：${userProfile.bodyShape || '未提供'}
-- 单品共 ${itemCount} 件，这是其中之一
+【次要参考】脸型：${userProfile.faceShape} / 身材：${userProfile.bodyShape || '未提供'} / 共 ${itemCount} 件
 
-请严格按照以下JSON格式返回，不要包含任何JSON以外的文字：
+请严格按以下JSON返回，不要包含任何JSON以外的文字：
 
 {
-  "itemName": "衣物名称（颜色+款式，如：海军蓝棉麻衬衫）",
-  "isCompatible": true 或 false,
-  "reason": "诊断理由（35字以内），必须明确指出衣物色温/明度是否匹配${userProfile.season}",
-  "alternativeSuggestion": "仅 isCompatible=false 时填写，给出符合${userProfile.season}的同款替代色（20字内，如：换成驼色或焦糖色款）"
+  "itemName": "衣物名称（颜色+款式，如：宝蓝棉麻衬衫）",
+  "rating": "best" 或 "ok" 或 "avoid",
+  "reason": "诊断理由（40字以内）",
+  "alternativeSuggestion": "仅 rating=avoid 时填写，推荐同款替代色（20字内）"
 }`
 }
 

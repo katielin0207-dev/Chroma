@@ -71,10 +71,15 @@ export interface AnalysisResult {
   occasions: OccasionSet[]
 }
 
+/** 三档判断：最适合 / 可以穿 / 不建议 */
+export type OOTDRating = 'best' | 'ok' | 'avoid'
+
 export interface OOTDItem {
   imageUrl: string
   itemName: string
-  isCompatible: boolean
+  /** @deprecated use rating */
+  isCompatible?: boolean
+  rating: OOTDRating
   reason: string
   alternativeSuggestion?: string
 }
