@@ -463,6 +463,27 @@ export default function ResultsPage() {
             })}
           </div>
 
+          {/* Outfit recs — Taobao links */}
+          {style.outfitRecs && style.outfitRecs.length > 0 && (
+            <div className="mb-4">
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击去淘宝搜索</div>
+              <div className="flex flex-wrap gap-2">
+                {style.outfitRecs.map((item) => (
+                  <a
+                    key={item}
+                    href={`https://s.taobao.com/search?q=${encodeURIComponent(item)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 flex-shrink-0"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2">
             {style.styleKeywords.map((k) => (
               <span key={k} className="px-3 py-1.5 text-xs bg-[var(--gold)] text-white rounded-full">{k}</span>
