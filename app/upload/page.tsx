@@ -215,6 +215,124 @@ export default function UploadPage() {
             })}
           </div>
 
+          {/* Photo reference guide */}
+          <div className="mb-5">
+            <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2.5 text-center">
+              参考示例 · 什么样的照片效果最好？
+            </div>
+            <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
+              {/* Good: clear face */}
+              <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
+                <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F5F0E8" stroke="#E8D8B0" strokeWidth="1"/>
+                  <ellipse cx="26" cy="30" rx="13" ry="16" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="1"/>
+                  <ellipse cx="21" cy="27" rx="2" ry="2.5" fill="#4A3520"/>
+                  <ellipse cx="31" cy="27" rx="2" ry="2.5" fill="#4A3520"/>
+                  <path d="M19.5 23.5 Q21 22 22.5 23.5" stroke="#7A5C3A" strokeWidth="0.8" fill="none"/>
+                  <path d="M29.5 23.5 Q31 22 32.5 23.5" stroke="#7A5C3A" strokeWidth="0.8" fill="none"/>
+                  <ellipse cx="26" cy="31" rx="1.2" ry="1.5" fill="#D4A882"/>
+                  <path d="M22 36 Q26 39 30 36" stroke="#C06040" strokeWidth="1" fill="none"/>
+                  <rect x="23" y="45" width="6" height="7" rx="1.5" fill="#F5D5B0"/>
+                  <path d="M10 57 Q14 51 23 51 L29 51 Q38 51 42 57" fill="#E8C8A0" stroke="#C9A84C" strokeWidth="0.6"/>
+                  {/* focus lines */}
+                  <line x1="4" y1="2" x2="10" y2="2" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="4" y1="2" x2="4" y2="8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="48" y1="2" x2="42" y2="2" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="48" y1="2" x2="48" y2="8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="4" y1="62" x2="10" y2="62" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="4" y1="62" x2="4" y2="56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="48" y1="62" x2="42" y2="62" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="48" y1="62" x2="48" y2="56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
+                  <span className="text-[9.5px] text-[var(--charcoal)] font-medium">正脸清晰</span>
+                </div>
+                <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">面部居中<br/>表情自然</div>
+              </div>
+
+              {/* Good: even lighting */}
+              <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
+                <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#FFF8F0" stroke="#E8D8B0" strokeWidth="1"/>
+                  {/* sun/light source */}
+                  <circle cx="26" cy="10" r="5" fill="#F5C040" opacity="0.7"/>
+                  <line x1="26" y1="3" x2="26" y2="1" stroke="#F5C040" strokeWidth="1.2"/>
+                  <line x1="32" y1="5" x2="33.5" y2="3.5" stroke="#F5C040" strokeWidth="1.2"/>
+                  <line x1="20" y1="5" x2="18.5" y2="3.5" stroke="#F5C040" strokeWidth="1.2"/>
+                  {/* light rays on face */}
+                  <ellipse cx="26" cy="35" rx="13" ry="16" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="1"/>
+                  <ellipse cx="21" cy="32" rx="2" ry="2.5" fill="#4A3520"/>
+                  <ellipse cx="31" cy="32" rx="2" ry="2.5" fill="#4A3520"/>
+                  <path d="M22 41 Q26 44 30 41" stroke="#C06040" strokeWidth="1" fill="none"/>
+                  <rect x="23" y="50" width="6" height="6" rx="1.5" fill="#F5D5B0"/>
+                  {/* soft glow */}
+                  <ellipse cx="26" cy="35" rx="16" ry="19" fill="none" stroke="#F5D8A0" strokeWidth="2" opacity="0.5"/>
+                </svg>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
+                  <span className="text-[9.5px] text-[var(--charcoal)] font-medium">光线均匀</span>
+                </div>
+                <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">自然光照<br/>避免阴影</div>
+              </div>
+
+              {/* Good: full body */}
+              <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
+                <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F5F0E8" stroke="#E8D8B0" strokeWidth="1"/>
+                  {/* full body figure */}
+                  <circle cx="26" cy="14" r="7" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="0.8"/>
+                  <ellipse cx="21.5" cy="13" rx="1.5" ry="1.8" fill="#4A3520"/>
+                  <ellipse cx="30.5" cy="13" rx="1.5" ry="1.8" fill="#4A3520"/>
+                  <path d="M23 18 Q26 20.5 29 18" stroke="#C06040" strokeWidth="0.9" fill="none"/>
+                  {/* torso */}
+                  <path d="M17 22 Q14 24 13 35 L18 35 L18 46 L24 46 L24 35 L28 35 L28 46 L34 46 L34 35 L39 35 Q38 24 35 22 Q30 20 26 21 Q22 20 17 22Z" fill="#E8C8A8" stroke="#C9A84C" strokeWidth="0.7"/>
+                  {/* legs */}
+                  <rect x="18" y="45" width="7" height="15" rx="3" fill="#C8A878"/>
+                  <rect x="27" y="45" width="7" height="15" rx="3" fill="#C8A878"/>
+                  {/* arms */}
+                  <path d="M17 23 Q11 28 12 36" stroke="#F5D5B0" strokeWidth="4" strokeLinecap="round"/>
+                  <path d="M35 23 Q41 28 40 36" stroke="#F5D5B0" strokeWidth="4" strokeLinecap="round"/>
+                  {/* bracket lines */}
+                  <line x1="6" y1="6" x2="6" y2="60" stroke="#5A8A60" strokeWidth="1" strokeDasharray="2 2" opacity="0.5"/>
+                  <line x1="46" y1="6" x2="46" y2="60" stroke="#5A8A60" strokeWidth="1" strokeDasharray="2 2" opacity="0.5"/>
+                </svg>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
+                  <span className="text-[9.5px] text-[var(--charcoal)] font-medium">全身站姿</span>
+                </div>
+                <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">整体可见<br/>站直居中</div>
+              </div>
+
+              {/* Bad: backlit / covered */}
+              <div className="flex-shrink-0 w-[88px] bg-[#FFF5F5] border border-[#FFCCCC] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
+                <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F8E8E8" stroke="#E8C0C0" strokeWidth="1"/>
+                  {/* bright window behind = backlit */}
+                  <rect x="10" y="8" width="32" height="26" rx="3" fill="#FFF8D0" stroke="#F0D080" strokeWidth="0.5"/>
+                  {/* dark silhouette face */}
+                  <ellipse cx="26" cy="36" rx="13" ry="16" fill="#4A3520"/>
+                  {/* mask / cover overlay */}
+                  <rect x="15" y="36" width="22" height="12" rx="5" fill="#2D2D2D" opacity="0.7"/>
+                  {/* sunglasses */}
+                  <rect x="16" y="27" width="8" height="6" rx="3" fill="#2D2D2D"/>
+                  <rect x="28" y="27" width="8" height="6" rx="3" fill="#2D2D2D"/>
+                  <line x1="24" y1="30" x2="28" y2="30" stroke="#2D2D2D" strokeWidth="1.5"/>
+                  {/* X marks */}
+                  <line x1="14" y1="54" x2="20" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="20" y1="54" x2="14" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="32" y1="54" x2="38" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="38" y1="54" x2="32" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-[#C05040]">✗</span>
+                  <span className="text-[9.5px] text-[var(--charcoal)] font-medium">请避免</span>
+                </div>
+                <div className="text-[8.5px] text-[#C05040] text-center leading-relaxed">背光/遮挡<br/>墨镜/口罩</div>
+              </div>
+            </div>
+          </div>
+
           {/* Drop zone */}
           <div
             className={`relative rounded-2xl border-2 border-dashed transition-all duration-200 cursor-pointer overflow-hidden ${dragging ? 'border-[var(--gold)] bg-[rgba(184,144,96,0.06)]' : preview ? 'border-[var(--border)]' : 'border-[var(--border)] hover:border-[var(--gold)] hover:bg-[rgba(184,144,96,0.03)]'}`}
