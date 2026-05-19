@@ -394,7 +394,7 @@ export default function ResultsPage() {
             {faceShape.hairstyleRecs.map((h) => (
               <a
                 key={h}
-                href={`https://www.xiaohongshu.com/explore?keyword=${encodeURIComponent(h + ' 发型 参考')}`}
+                href={`https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(h + ' 发型')}&source=web_search_result_notes`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
