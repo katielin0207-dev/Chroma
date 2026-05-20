@@ -394,7 +394,7 @@ export default function ResultsPage() {
             {faceShape.hairstyleRecs.map((h) => (
               <a
                 key={h}
-                href={`https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(h + ' 发型')}&source=web_search_result_notes`}
+                href={`https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(h + ' 发型')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
@@ -466,12 +466,12 @@ export default function ResultsPage() {
           {/* Outfit recs — Taobao links */}
           {style.outfitRecs && style.outfitRecs.length > 0 && (
             <div className="mb-4">
-              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击去淘宝搜索</div>
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击去京东搜索</div>
               <div className="flex flex-wrap gap-2">
                 {style.outfitRecs.map((item) => (
                   <a
                     key={item}
-                    href={`https://s.taobao.com/search?q=${encodeURIComponent(item)}`}
+                    href={`https://search.jd.com/Search?keyword=${encodeURIComponent(item)}&enc=utf-8`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
