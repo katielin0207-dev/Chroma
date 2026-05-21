@@ -13,13 +13,21 @@ export function Navbar() {
         <Link href="/" className="font-serif text-[var(--charcoal)] text-lg tracking-tight">
           焕颜<span className="text-[var(--gold)]">AI</span>
         </Link>
-        <button
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 px-4 py-1.5 border border-[var(--border)] text-[var(--warm-gray)] text-sm rounded-full hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors duration-200"
-        >
-          <span className="text-base leading-none">✉</span>
-          <span>反馈</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/features"
+            className="text-xs text-[var(--warm-gray)] hover:text-[var(--gold)] transition-colors px-2 py-1"
+          >
+            功能介绍
+          </Link>
+          <button
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-1.5 px-4 py-1.5 border border-[var(--border)] text-[var(--warm-gray)] text-sm rounded-full hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors duration-200"
+          >
+            <span className="text-base leading-none">✉</span>
+            <span>反馈</span>
+          </button>
+        </div>
       </nav>
       <FeedbackModal open={open} onClose={() => setOpen(false)} />
     </>

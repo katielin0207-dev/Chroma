@@ -612,7 +612,7 @@ export default function UploadPage() {
 
           {/* Back to landing */}
           <div className="mt-8 text-center">
-            <a href="/?showLanding=1" className="text-xs text-[var(--warm-gray)] hover:text-[var(--gold)] transition-colors underline underline-offset-2">
+            <a href="/features" className="text-xs text-[var(--warm-gray)] hover:text-[var(--gold)] transition-colors underline underline-offset-2">
               查看功能介绍
             </a>
           </div>
