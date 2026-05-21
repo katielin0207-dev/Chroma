@@ -9,11 +9,16 @@ export const maxDuration = 30
 
 export async function POST(req: NextRequest) {
   try {
-    const { imageUrl, photoType, styleDescription, styleImageUrls } = await req.json() as {
+    const { imageUrl, photoType, styleDescription, styleImageUrls, userProfile } = await req.json() as {
       imageUrl: string
       photoType?: string
       styleDescription?: string
       styleImageUrls?: string[]
+      userProfile?: {
+        ageGroup?: string
+        styleGoals?: string[]
+        imagePurpose?: string
+      }
     }
 
     if (!imageUrl || typeof imageUrl !== 'string') {
@@ -22,6 +27,15 @@ export async function POST(req: NextRequest) {
 
     // Build the base prompt
     let prompt = photoType === 'full' ? ANALYSIS_PROMPT : ANALYSIS_PROMPT_FACE_ONLY
+
+    // Append user profile context first (highest priority for personalization)
+    if (userProfile && (userProfile.ageGroup || userProfile.imagePurpose || userProfile.styleGoals?.length)) {
+      const parts: string[] = []
+      if (userProfile.ageGroup) parts.push(`年龄段：${userProfile.ageGroup}`)
+      if (userProfile.imagePurpose) parts.push(`改变形象的目的：${userProfile.imagePurpose}`)
+      if (userProfile.styleGoals?.length) parts.push(`期望的风格方向：${userProfile.styleGoals.join('、')}`)
+      prompt += `\n\n【用户基本信息】\n${parts.join(' / ')}\n请在分析穿搭风格、场合建议、单品推荐和穿搭公式时，充分考虑用户的年龄段和形象目标，让建议更贴合其真实需求。`
+    }
 
     // Append style context to the prompt if provided
     if (styleDescription?.trim()) {

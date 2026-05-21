@@ -6,6 +6,18 @@ import { Navbar } from '@/components/common/Navbar'
 import { LoadingSteps } from '@/components/common/LoadingSteps'
 import { Spinner } from '@/components/ui/spinner'
 
+// ── user profile options ─────────────────────────────────────────────────────
+const AGE_GROUPS = ['18–25岁', '26–35岁', '36–45岁', '45岁以上']
+
+const STYLE_GOALS = [
+  '知性优雅', '简约高级', '甜美可爱', '帅气中性',
+  '日系清新', '欧美大气', '复古文艺', '运动休闲',
+]
+
+const IMAGE_PURPOSES = [
+  '日常穿搭升级', '职场形象提升', '约会 / 相亲', '特殊场合准备', '整体形象蜕变',
+]
+
 // ── style prompt template chips ──────────────────────────────────────────────
 const STYLE_CHIPS = [
   '简约高级感',
@@ -43,6 +55,11 @@ export default function UploadPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [photoType, setPhotoType] = useState<'face' | 'full'>('face')
+
+  // user profile state
+  const [ageGroup, setAgeGroup] = useState<string>('')
+  const [styleGoals, setStyleGoals] = useState<string[]>([])
+  const [imagePurpose, setImagePurpose] = useState<string>('')
 
   // style supplement state
   const [styleMode, setStyleMode] = useState<'none' | 'text' | 'photo'>('none')
@@ -139,6 +156,11 @@ export default function UploadPage() {
             photoType,
             styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
             styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
+            userProfile: {
+              ageGroup: ageGroup || undefined,
+              styleGoals: styleGoals.length > 0 ? styleGoals : undefined,
+              imagePurpose: imagePurpose || undefined,
+            },
           }),
           signal: analyzeController.signal,
         })
@@ -213,6 +235,77 @@ export default function UploadPage() {
                 </button>
               )
             })}
+          </div>
+
+          {/* ── User Profile: age / style goal / purpose ── */}
+          <div className="mb-5 p-4 bg-[var(--cream)] rounded-2xl border border-[var(--border)]">
+            <div className="text-xs font-medium text-[var(--charcoal)] mb-0.5">告诉我更多关于你</div>
+            <div className="text-[10px] text-[var(--warm-gray)] mb-4">帮助 AI 给出更贴合你需求的建议</div>
+
+            {/* Age group */}
+            <div className="mb-3.5">
+              <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">年龄段</div>
+              <div className="flex flex-wrap gap-1.5">
+                {AGE_GROUPS.map((age) => (
+                  <button
+                    key={age}
+                    onClick={() => setAgeGroup(ageGroup === age ? '' : age)}
+                    className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
+                      ageGroup === age
+                        ? 'bg-[var(--charcoal)] text-white border-[var(--charcoal)]'
+                        : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
+                    }`}
+                  >
+                    {age}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Image purpose */}
+            <div className="mb-3.5">
+              <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">改变形象的目的</div>
+              <div className="flex flex-wrap gap-1.5">
+                {IMAGE_PURPOSES.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setImagePurpose(imagePurpose === p ? '' : p)}
+                    className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
+                      imagePurpose === p
+                        ? 'bg-[var(--gold)] text-white border-[var(--gold)]'
+                        : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Style goals — multi select */}
+            <div>
+              <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">想要的风格方向 <span className="opacity-60">（可多选）</span></div>
+              <div className="flex flex-wrap gap-1.5">
+                {STYLE_GOALS.map((s) => {
+                  const selected = styleGoals.includes(s)
+                  return (
+                    <button
+                      key={s}
+                      onClick={() =>
+                        setStyleGoals(selected ? styleGoals.filter((x) => x !== s) : [...styleGoals, s])
+                      }
+                      className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
+                        selected
+                          ? 'bg-[var(--nude)] text-[var(--charcoal)] border-[var(--gold)]'
+                          : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           </div>
 
           {/* Photo reference guide */}
