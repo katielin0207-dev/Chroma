@@ -15,8 +15,15 @@ const STYLE_GOALS = [
 ]
 
 const IMAGE_PURPOSES = [
-  '日常穿搭升级', '职场形象提升', '约会 / 相亲', '特殊场合准备', '整体形象蜕变',
-]
+  { id: 'daily-upgrade', label: '日常穿搭升级', desc: 'AI 分析你现有的穿搭，告诉你哪些可以保留、哪里需要调整' },
+  { id: 'explore-styles', label: '尝试不同的风格', desc: 'AI 基于你的脸型和身材，推荐 3 种截然不同的风格方向' },
+  { id: 'special-occasion', label: '为特殊场合准备', desc: '告诉 AI 你的活动详情，获得专属着装方案' },
+] as const
+
+const OCCASION_EVENT_TYPES = ['婚礼 / 婚宴', '商务晚宴', '毕业典礼', '年会 / 颁奖礼', '面试', '派对', '约会', '其他']
+const OCCASION_DRESSCODES = ['正式 (Black Tie)', '半正式 (Smart Casual)', '休闲 (Casual)', '无特别要求']
+
+type ImagePurposeId = 'daily-upgrade' | 'explore-styles' | 'special-occasion' | ''
 
 // ── style prompt template chips ──────────────────────────────────────────────
 const STYLE_CHIPS = [
@@ -59,7 +66,16 @@ export default function UploadPage() {
   // user profile state
   const [ageGroup, setAgeGroup] = useState<string>('')
   const [styleGoals, setStyleGoals] = useState<string[]>([])
-  const [imagePurpose, setImagePurpose] = useState<string>('')
+  const [imagePurpose, setImagePurpose] = useState<ImagePurposeId>('')
+
+  // daily-upgrade: current outfit photos
+  const currentOutfitInputRef = useRef<HTMLInputElement>(null)
+  const [currentOutfitFiles, setCurrentOutfitFiles] = useState<Array<{ file: File; preview: string }>>([])
+
+  // special-occasion: event details
+  const [occasionEventType, setOccasionEventType] = useState('')
+  const [occasionDresscode, setOccasionDresscode] = useState('')
+  const [occasionDescription, setOccasionDescription] = useState('')
 
   // style supplement state
   const [styleMode, setStyleMode] = useState<'none' | 'text' | 'photo'>('none')
@@ -126,6 +142,21 @@ export default function UploadPage() {
       const upData = await upRes.json()
       if (!upRes.ok) throw new Error(upData.error || '上传失败')
 
+      // Upload current outfit photos (daily-upgrade mode)
+      let currentOutfitUrls: string[] = []
+      if (imagePurpose === 'daily-upgrade' && currentOutfitFiles.length > 0) {
+        currentOutfitUrls = await Promise.all(
+          currentOutfitFiles.map(async ({ file: sf }) => {
+            const sf_form = new FormData()
+            sf_form.append('file', sf)
+            const r = await fetch('/api/upload-image', { method: 'POST', body: sf_form })
+            const d = await r.json()
+            if (!r.ok) throw new Error(d.error || '穿搭照片上传失败')
+            return d.publicUrl as string
+          })
+        )
+      }
+
       // Upload style reference photos (if any)
       let styleImageUrls: string[] = []
       if (styleMode === 'photo' && styleFiles.length > 0) {
@@ -154,6 +185,13 @@ export default function UploadPage() {
           body: JSON.stringify({
             imageUrl: upData.publicUrl,
             photoType,
+            analysisMode: imagePurpose || 'standard',
+            currentOutfitUrls: currentOutfitUrls.length > 0 ? currentOutfitUrls : undefined,
+            occasionDetails: imagePurpose === 'special-occasion' ? {
+              eventType: occasionEventType || '未指定',
+              dresscode: occasionDresscode || '无特别要求',
+              description: occasionDescription.trim() || '无',
+            } : undefined,
             styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
             styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
             userProfile: {
@@ -262,50 +300,150 @@ export default function UploadPage() {
               </div>
             </div>
 
-            {/* Image purpose */}
+            {/* Image purpose — 3 cards */}
             <div className="mb-3.5">
-              <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">改变形象的目的</div>
-              <div className="flex flex-wrap gap-1.5">
-                {IMAGE_PURPOSES.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setImagePurpose(imagePurpose === p ? '' : p)}
-                    className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
-                      imagePurpose === p
-                        ? 'bg-[var(--gold)] text-white border-[var(--gold)]'
-                        : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Style goals — multi select */}
-            <div>
-              <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">想要的风格方向 <span className="opacity-60">（可多选）</span></div>
-              <div className="flex flex-wrap gap-1.5">
-                {STYLE_GOALS.map((s) => {
-                  const selected = styleGoals.includes(s)
+              <div className="text-[10px] text-[var(--warm-gray)] mb-2 tracking-[0.5px]">这次分析的目的</div>
+              <div className="space-y-2">
+                {IMAGE_PURPOSES.map((p) => {
+                  const active = imagePurpose === p.id
                   return (
                     <button
-                      key={s}
-                      onClick={() =>
-                        setStyleGoals(selected ? styleGoals.filter((x) => x !== s) : [...styleGoals, s])
-                      }
-                      className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
-                        selected
-                          ? 'bg-[var(--nude)] text-[var(--charcoal)] border-[var(--gold)]'
-                          : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
+                      key={p.id}
+                      onClick={() => setImagePurpose(active ? '' : p.id)}
+                      className={`w-full p-3 rounded-xl border text-left transition-all ${
+                        active
+                          ? 'border-[var(--gold)] bg-[rgba(184,144,96,0.07)]'
+                          : 'border-[var(--border)] bg-white hover:border-[var(--gold)]'
                       }`}
                     >
-                      {s}
+                      <div className={`text-xs font-medium mb-0.5 ${active ? 'text-[var(--gold)]' : 'text-[var(--charcoal)]'}`}>
+                        {p.label}
+                      </div>
+                      <div className="text-[10px] text-[var(--warm-gray)] leading-relaxed">{p.desc}</div>
                     </button>
                   )
                 })}
               </div>
             </div>
+
+            {/* ── Conditional UI per mode ── */}
+
+            {/* daily-upgrade: upload current outfit photos */}
+            {imagePurpose === 'daily-upgrade' && (
+              <div className="mt-3 p-3 bg-white rounded-xl border border-[var(--border)]">
+                <div className="text-[10px] font-medium text-[var(--charcoal)] mb-0.5">上传你目前的穿搭照</div>
+                <div className="text-[9.5px] text-[var(--warm-gray)] mb-2.5">最多 3 张 · 可选，有照片建议更精准</div>
+                <div className="grid grid-cols-3 gap-2">
+                  {currentOutfitFiles.map((f, i) => (
+                    <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden border border-[var(--border)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={f.preview} alt="" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => setCurrentOutfitFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="absolute top-1 right-1 w-5 h-5 bg-black/50 text-white text-[10px] rounded-full flex items-center justify-center"
+                      >✕</button>
+                    </div>
+                  ))}
+                  {currentOutfitFiles.length < 3 && (
+                    <button
+                      onClick={() => currentOutfitInputRef.current?.click()}
+                      className="aspect-[3/4] rounded-xl border-2 border-dashed border-[var(--border)] flex flex-col items-center justify-center gap-1 hover:border-[var(--gold)] transition-colors text-[var(--warm-gray)] hover:text-[var(--gold)]"
+                    >
+                      <span className="text-lg">+</span>
+                      <span className="text-[9px]">添加</span>
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={currentOutfitInputRef}
+                  type="file" multiple accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (!e.target.files) return
+                    const next = [...currentOutfitFiles]
+                    for (const f of Array.from(e.target.files)) {
+                      if (next.length >= 3) break
+                      if (!['image/jpeg','image/png','image/webp'].includes(f.type)) continue
+                      next.push({ file: f, preview: URL.createObjectURL(f) })
+                    }
+                    setCurrentOutfitFiles(next)
+                  }}
+                />
+              </div>
+            )}
+
+            {/* explore-styles: informational only */}
+            {imagePurpose === 'explore-styles' && (
+              <div className="mt-3 p-3 bg-white rounded-xl border border-[var(--border)] text-[10px] text-[var(--warm-gray)] leading-relaxed">
+                ✦ AI 将基于你的脸型、色彩季型和身材，推荐 <span className="text-[var(--charcoal)] font-medium">3 种截然不同</span> 的风格方向，每种都附带完整穿搭公式和单品搜索词。
+              </div>
+            )}
+
+            {/* special-occasion: event details form */}
+            {imagePurpose === 'special-occasion' && (
+              <div className="mt-3 p-3 bg-white rounded-xl border border-[var(--border)] space-y-3">
+                <div>
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-1.5">活动类型</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {OCCASION_EVENT_TYPES.map((t) => (
+                      <button key={t} onClick={() => setOccasionEventType(occasionEventType === t ? '' : t)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] border transition-all ${occasionEventType === t ? 'bg-[var(--charcoal)] text-white border-[var(--charcoal)]' : 'bg-[var(--cream)] border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'}`}>
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-1.5">着装要求</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {OCCASION_DRESSCODES.map((d) => (
+                      <button key={d} onClick={() => setOccasionDresscode(occasionDresscode === d ? '' : d)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] border transition-all ${occasionDresscode === d ? 'bg-[var(--gold)] text-white border-[var(--gold)]' : 'bg-[var(--cream)] border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'}`}>
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[var(--warm-gray)] mb-1.5">详细描述 <span className="opacity-60">（时间 / 地点 / 特殊要求等）</span></div>
+                  <textarea
+                    value={occasionDescription}
+                    onChange={(e) => setOccasionDescription(e.target.value)}
+                    placeholder="例如：周六下午的户外婚礼，需要全程站立，不能抢新娘风头，最好不穿全白或全黑…"
+                    rows={3}
+                    maxLength={200}
+                    className="w-full p-2.5 bg-[var(--cream)] border border-[var(--border)] rounded-xl text-xs text-[var(--charcoal)] placeholder:text-[var(--warm-gray)] focus:outline-none focus:border-[var(--gold)] resize-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Style goals — multi select (shown when no specific mode or explore-styles) */}
+            {(imagePurpose === '' || imagePurpose === 'explore-styles') && (
+              <div className="mt-3">
+                <div className="text-[10px] text-[var(--warm-gray)] mb-1.5 tracking-[0.5px]">想要的风格方向 <span className="opacity-60">（可多选）</span></div>
+                <div className="flex flex-wrap gap-1.5">
+                  {STYLE_GOALS.map((s) => {
+                    const selected = styleGoals.includes(s)
+                    return (
+                      <button
+                        key={s}
+                        onClick={() =>
+                          setStyleGoals(selected ? styleGoals.filter((x) => x !== s) : [...styleGoals, s])
+                        }
+                        className={`px-3 py-1.5 rounded-full text-[11px] border transition-all ${
+                          selected
+                            ? 'bg-[var(--nude)] text-[var(--charcoal)] border-[var(--gold)]'
+                            : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)]'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Photo reference guide */}

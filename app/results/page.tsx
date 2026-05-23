@@ -9,6 +9,46 @@ import { ColorSwatch } from '@/components/results/ColorSwatch'
 
 const ALL_NAV_SECTIONS = ['色彩季型', '脸型分析', '身材分析', '穿搭风格', '场合建议']
 
+// ── Copyable keyword chip ────────────────────────────────────────────────────
+function CopyKeyword({ keyword, hint = '已复制，可去小红书/淘宝搜索' }: { keyword: string; hint?: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = () => {
+    navigator.clipboard.writeText(keyword).catch(() => {
+      // fallback for older browsers
+      const ta = document.createElement('textarea')
+      ta.value = keyword
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    })
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <button
+      onClick={copy}
+      title={hint}
+      className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-full border transition-all ${
+        copied
+          ? 'bg-[var(--green-ok)] text-white border-[var(--green-ok)]'
+          : 'bg-white border-[var(--border)] text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)]'
+      }`}
+    >
+      {copied ? (
+        <>✓ 已复制</>
+      ) : (
+        <>
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 flex-shrink-0">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          {keyword}
+        </>
+      )}
+    </button>
+  )
+}
+
 // ---------------------------------------------------------------------------
 // Off-screen summary card — designed for html2canvas capture
 // ---------------------------------------------------------------------------
@@ -307,6 +347,130 @@ export default function ResultsPage() {
           </div>
         </div>
 
+        {/* ── Mode-specific result cards ── */}
+
+        {/* daily-upgrade: wardrobe advice */}
+        {result.wardrobeAdvice && (
+          <section className="p-5 bg-[var(--cream)] rounded-3xl border-2 border-[var(--gold)] shadow-card">
+            <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">日常穿搭升级</div>
+            <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-3">你的穿搭改造方案</h2>
+            {result.wardrobeAdvice.summary && (
+              <div className="p-3 bg-white rounded-xl border-l-2 border-[var(--gold)] text-xs text-[var(--warm-gray)] leading-relaxed mb-4">
+                {result.wardrobeAdvice.summary}
+              </div>
+            )}
+            <div className="space-y-3">
+              {result.wardrobeAdvice.keep.length > 0 && (
+                <div className="p-3 rounded-xl" style={{ background: 'rgba(90,138,96,0.06)', border: '1px solid rgba(90,138,96,0.2)' }}>
+                  <div className="text-[10px] font-medium mb-2" style={{ color: 'var(--green-ok)' }}>✓ 值得保留</div>
+                  <ul className="space-y-1">{result.wardrobeAdvice.keep.map((s, i) => (
+                    <li key={i} className="text-xs text-[var(--charcoal)] leading-relaxed">· {s}</li>
+                  ))}</ul>
+                </div>
+              )}
+              {result.wardrobeAdvice.adjust.length > 0 && (
+                <div className="p-3 rounded-xl" style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)' }}>
+                  <div className="text-[10px] font-medium text-[var(--gold)] mb-2">✎ 稍作调整</div>
+                  <ul className="space-y-1">{result.wardrobeAdvice.adjust.map((s, i) => (
+                    <li key={i} className="text-xs text-[var(--charcoal)] leading-relaxed">· {s}</li>
+                  ))}</ul>
+                </div>
+              )}
+              {result.wardrobeAdvice.replace.length > 0 && (
+                <div className="p-3 rounded-xl" style={{ background: 'rgba(192,80,64,0.04)', border: '1px solid rgba(192,80,64,0.15)' }}>
+                  <div className="text-[10px] font-medium mb-2" style={{ color: 'var(--red-no)' }}>↻ 建议替换</div>
+                  <ul className="space-y-1">{result.wardrobeAdvice.replace.map((s, i) => (
+                    <li key={i} className="text-xs text-[var(--charcoal)] leading-relaxed">· {s}</li>
+                  ))}</ul>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* explore-styles: 3 style options */}
+        {result.styleOptions && result.styleOptions.length > 0 && (
+          <section className="p-5 bg-[var(--cream)] rounded-3xl border-2 border-[var(--gold)] shadow-card">
+            <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">风格探索</div>
+            <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-3">适合你的 3 种风格方向</h2>
+            <div className="space-y-4">
+              {result.styleOptions.map((opt, i) => (
+                <div key={i} className="p-4 bg-white rounded-2xl border border-[var(--border)]">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <div className="font-medium text-sm text-[var(--charcoal)]">{opt.name}</div>
+                      <div className="text-[10px] text-[var(--warm-gray)] mt-0.5">{opt.tagline}</div>
+                    </div>
+                    <span className="text-[10px] text-[var(--gold)] bg-[rgba(184,144,96,0.1)] px-2 py-0.5 rounded-full flex-shrink-0 ml-2">方案 {i + 1}</span>
+                  </div>
+                  <div className="text-[10px] text-[var(--warm-gray)] leading-relaxed mb-2 px-3 py-1.5 bg-[rgba(184,144,96,0.05)] rounded-lg">
+                    {opt.whyItWorks}
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 mb-3">
+                    {Object.entries(opt.outfitFormula).map(([k, v]) => {
+                      const labels: Record<string, string> = { top: '上衣', bottom: '下装', material: '材质', accessory: '配饰' }
+                      return (
+                        <div key={k} className="p-2 bg-[var(--cream)] rounded-lg border border-[var(--border)]">
+                          <div className="text-[9px] text-[var(--warm-gray)]">{labels[k]}</div>
+                          <div className="text-[10.5px] font-medium text-[var(--charcoal)]">{v}</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {opt.outfitRecs.length > 0 && (
+                    <div>
+                      <div className="text-[9px] text-[var(--warm-gray)] mb-1.5">单品关键词 · 点击复制</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {opt.outfitRecs.map((item) => (
+                          <CopyKeyword key={item} keyword={item} hint="已复制，去淘宝或小红书搜索" />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* special-occasion: occasion advice */}
+        {result.occasionAdvice && (
+          <section className="p-5 bg-[var(--cream)] rounded-3xl border-2 border-[var(--gold)] shadow-card">
+            <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">特殊场合方案</div>
+            <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-1">{result.occasionAdvice.eventType}</h2>
+            <div className="text-xs text-[var(--warm-gray)] mb-4">{result.occasionAdvice.dresscode}</div>
+            <div className="p-4 bg-white rounded-2xl border border-[var(--border)] mb-3">
+              <div className="text-[10px] text-[var(--gold)] mb-1.5">主推穿搭方案</div>
+              <div className="text-sm text-[var(--charcoal)] leading-relaxed mb-3">{result.occasionAdvice.mainOutfit}</div>
+              {result.occasionAdvice.colors.length > 0 && (
+                <div className="flex gap-2 mb-2">
+                  {result.occasionAdvice.colors.map((hex, i) => (
+                    <div key={i} className="w-5 h-5 rounded-full border border-[var(--border)]" style={{ backgroundColor: hex }} />
+                  ))}
+                </div>
+              )}
+              <div className="text-[10px] text-[var(--warm-gray)] leading-relaxed">{result.occasionAdvice.colorSuggestion}</div>
+            </div>
+            {result.occasionAdvice.tips.length > 0 && (
+              <div className="mb-3">
+                <div className="text-[10px] text-[var(--warm-gray)] mb-1.5">穿搭注意事项</div>
+                <ul className="space-y-1">
+                  {result.occasionAdvice.tips.map((t, i) => (
+                    <li key={i} className="text-xs text-[var(--charcoal)] flex gap-1.5">
+                      <span className="text-[var(--gold)] flex-shrink-0">·</span>{t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {result.occasionAdvice.alternativeOption && (
+              <div className="p-3 bg-[var(--ivory)] rounded-xl text-xs text-[var(--warm-gray)] leading-relaxed">
+                <span className="text-[var(--charcoal)] font-medium">备选方案：</span>{result.occasionAdvice.alternativeOption}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Section 0: Color Season */}
         <section ref={(el) => { sectionRefs.current[0] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
           <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">色彩季型</div>
@@ -388,22 +552,11 @@ export default function ResultsPage() {
 
           <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 发型建议</div>
           <div className="text-[10px] text-[var(--warm-gray)] mb-3 leading-relaxed">
-            点击发型名称可在小红书查看图片参考
+            点击复制关键词 → 去小红书搜索参考图
           </div>
           <div className="flex flex-wrap gap-2">
             {faceShape.hairstyleRecs.map((h) => (
-              <a
-                key={h}
-                href={`https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(h + ' 发型')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
-              >
-                {h}
-                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M2 10L10 2M10 2H5M10 2V7" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+              <CopyKeyword key={h} keyword={h + ' 发型'} hint="已复制，去小红书搜索参考图" />
             ))}
           </div>
         </section>
@@ -463,22 +616,13 @@ export default function ResultsPage() {
             })}
           </div>
 
-          {/* Outfit recs — Taobao links */}
+          {/* Outfit recs — copyable keywords */}
           {style.outfitRecs && style.outfitRecs.length > 0 && (
             <div className="mb-4">
-              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击去京东搜索</div>
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击复制去淘宝/小红书搜索</div>
               <div className="flex flex-wrap gap-2">
                 {style.outfitRecs.map((item) => (
-                  <a
-                    key={item}
-                    href={`https://search.jd.com/Search?keyword=${encodeURIComponent(item)}&enc=utf-8`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-[var(--border)] rounded-full text-[var(--charcoal)] hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
-                  >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 flex-shrink-0"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    {item}
-                  </a>
+                  <CopyKeyword key={item} keyword={item} hint="已复制，去淘宝或小红书搜索" />
                 ))}
               </div>
             </div>

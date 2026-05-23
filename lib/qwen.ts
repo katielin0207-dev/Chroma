@@ -179,6 +179,57 @@ ${COLOR_RULE}
   ${SHARED_JSON_TAIL}
 }`
 
+// ── Mode-specific prompt addons ──────────────────────────────────────────────
+// Each addon is injected BEFORE the JSON schema so Qwen respects it
+
+/** 日常穿搭升级：对用户现有穿搭给保留/调整/替换建议 */
+export const MODE_DAILY_UPGRADE_ADDON = `
+【模式：日常穿搭升级】
+用户上传了自己目前的穿搭照片作为参考。请在完成标准分析后，在 JSON 末尾额外输出 "wardrobeAdvice" 字段，对照用户季型/脸型/身材，分析用户现有穿搭：
+"wardrobeAdvice": {
+  "keep": ["值得保留的具体单品/颜色/风格元素，说明为什么适合她的类型"],
+  "adjust": ["稍作调整就能更好的部分，给出具体改法（如：换掉冷调蓝改为暖棕色同款）"],
+  "replace": ["与季型/脸型明显冲突的单品，说明冲突原因和替换方向"],
+  "summary": "整体升级思路（50字以内，正向引导，给出最简单有效的一步改变）"
+}
+注意：keep/adjust/replace 每项至少 2 条，要具体（有颜色+款式描述），不要泛泛而谈。`
+
+/** 尝试不同风格：基于脸型+身材推荐 3 种不同风格方向 */
+export const MODE_EXPLORE_STYLES_ADDON = `
+【模式：多风格探索】
+用户想探索不同风格的可能性。请在完成标准分析后，在 JSON 末尾额外输出 "styleOptions" 数组，基于用户的脸型、色彩季型和身材，推荐 3 种截然不同但都适合她的风格方向：
+"styleOptions": [
+  {
+    "name": "风格名称（如：都市知性风）",
+    "tagline": "一句话描述该风格的核心气质（15字以内）",
+    "keywords": ["关键词1", "关键词2", "关键词3"],
+    "outfitFormula": {"top": "上衣廓形建议", "bottom": "下装廓形建议", "material": "材质方向", "accessory": "配饰点睛"},
+    "outfitRecs": ["具体单品1（颜色+款式，可搜索）", "具体单品2", "具体单品3"],
+    "whyItWorks": "为什么这个风格特别适合你（20字以内，结合脸型/季型/身材）"
+  }
+]
+请确保 3 种风格差异明显（如：清冷职场风 vs 温柔法式风 vs 帅气中性风），每种都与用户的色彩季型和脸型相符。`
+
+/** 为特殊场合准备：针对具体活动的完整着装方案 */
+export const MODE_SPECIAL_OCCASION_ADDON = (details: {
+  eventType: string
+  dresscode: string
+  description: string
+}) => `
+【模式：特殊场合准备】
+场合信息：活动类型：${details.eventType} / 着装级别：${details.dresscode} / 用户描述："${details.description}"
+请在完成标准分析后，在 JSON 末尾额外输出 "occasionAdvice" 字段，专门针对这个场合：
+"occasionAdvice": {
+  "eventType": "${details.eventType}",
+  "mainOutfit": "主推穿搭（详细描述每件单品的颜色+款式+材质，形成完整LOOK）",
+  "dresscode": "对这次场合着装规范的具体解读（结合用户季型）",
+  "colorSuggestion": "针对该场合的颜色建议（结合用户季型说明为什么选这个颜色）",
+  "colors": ["#RRGGBB", "#RRGGBB", "#RRGGBB"],
+  "tips": ["注意点1（如：避免过于抢眼）", "注意点2", "注意点3"],
+  "alternativeOption": "如果主推不适合，备选穿搭方案（简短描述）"
+}
+颜色必须与用户的色彩季型一致，不能与季型规则冲突。`
+
 // 中性色 — 任何季型都可以穿（rating: "ok"）
 // 黑白灰在色彩理论中属于无彩色，虽非最优，但无明显冲突
 const UNIVERSAL_NEUTRALS = '黑色、纯白、浅灰、中灰、炭灰、深灰、米白（接近白色的极浅米）'
