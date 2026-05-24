@@ -169,7 +169,17 @@ export async function POST(req: NextRequest) {
     if (err instanceof ParseError) {
       return NextResponse.json({ error: err.message }, { status: 422 })
     }
+    // Distinguish timeout from other errors so client can retry intelligently
+    if (err instanceof Error && err.message === 'TIMEOUT') {
+      return NextResponse.json(
+        { error: 'AI_TIMEOUT', retryable: true },
+        { status: 504 }
+      )
+    }
     console.error('Analyze route error:', err)
-    return NextResponse.json({ error: 'AI 分析失败，请重试' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'AI 分析失败，请重试', retryable: true },
+      { status: 500 }
+    )
   }
 }

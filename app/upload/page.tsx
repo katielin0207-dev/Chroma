@@ -172,53 +172,80 @@ export default function UploadPage() {
         )
       }
 
-      // Step 2: analyze — 35s client timeout to prevent infinite spinner
+      // Step 2: analyze — auto-retry up to 3 attempts on timeout/server errors
       setCurrentStep(1)
-      const analyzeController = new AbortController()
-      const analyzeTimeout = setTimeout(() => analyzeController.abort(), 35000)
 
-      let anRes: Response
-      try {
-        anRes = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            imageUrl: upData.publicUrl,
-            photoType,
-            analysisMode: imagePurpose || 'standard',
-            currentOutfitUrls: currentOutfitUrls.length > 0 ? currentOutfitUrls : undefined,
-            occasionDetails: imagePurpose === 'special-occasion' ? {
-              eventType: occasionEventType || '未指定',
-              dresscode: occasionDresscode || '无特别要求',
-              description: occasionDescription.trim() || '无',
-            } : undefined,
-            styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
-            styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
-            userProfile: {
-              ageGroup: ageGroup || undefined,
-              styleGoals: styleGoals.length > 0 ? styleGoals : undefined,
-              imagePurpose: imagePurpose || undefined,
-            },
-          }),
-          signal: analyzeController.signal,
-        })
-      } catch (fetchErr) {
-        clearTimeout(analyzeTimeout)
-        if (fetchErr instanceof Error && fetchErr.name === 'AbortError') {
-          throw new Error('AI 分析超时（超过 35 秒），请重试。建议使用清晰的正面照片。')
+      const MAX_ATTEMPTS = 3
+      let anRes: Response | null = null
+      let anData: { result?: unknown; error?: string; retryable?: boolean } = {}
+
+      const analyzeBody = JSON.stringify({
+        imageUrl: upData.publicUrl,
+        photoType,
+        analysisMode: imagePurpose || 'standard',
+        currentOutfitUrls: currentOutfitUrls.length > 0 ? currentOutfitUrls : undefined,
+        occasionDetails: imagePurpose === 'special-occasion' ? {
+          eventType: occasionEventType || '未指定',
+          dresscode: occasionDresscode || '无特别要求',
+          description: occasionDescription.trim() || '无',
+        } : undefined,
+        styleDescription: styleMode === 'text' && styleText.trim() ? styleText.trim() : undefined,
+        styleImageUrls: styleMode === 'photo' && styleImageUrls.length > 0 ? styleImageUrls : undefined,
+        userProfile: {
+          ageGroup: ageGroup || undefined,
+          styleGoals: styleGoals.length > 0 ? styleGoals : undefined,
+          imagePurpose: imagePurpose || undefined,
+        },
+      })
+
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        // Brief wait before retry (not before first attempt)
+        if (attempt > 1) {
+          await new Promise((r) => setTimeout(r, 2500))
         }
-        throw fetchErr
-      }
-      clearTimeout(analyzeTimeout)
 
-      // Handle non-JSON responses (e.g. Vercel 504 HTML error pages)
-      let anData: { result?: unknown; error?: string }
-      try {
-        anData = await anRes.json()
-      } catch {
-        throw new Error(`服务器错误 (${anRes.status})，请稍后重试`)
+        // Per-attempt 38s client timeout (leaves time for 3 full attempts)
+        const attemptController = new AbortController()
+        const attemptTimeout = setTimeout(() => attemptController.abort(), 38000)
+
+        try {
+          const res = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: analyzeBody,
+            signal: attemptController.signal,
+          })
+          clearTimeout(attemptTimeout)
+
+          // Non-JSON responses (Vercel 504 HTML pages, etc.)
+          let data: typeof anData = {}
+          try { data = await res.json() } catch { /* ignore */ }
+
+          // 422 = user error (e.g. no face in photo) — don't retry
+          if (res.status === 422) {
+            anRes = res; anData = data; break
+          }
+
+          // Success
+          if (res.ok) {
+            anRes = res; anData = data; break
+          }
+
+          // 500/504 retryable — loop continues
+          anData = data
+        } catch (fetchErr) {
+          clearTimeout(attemptTimeout)
+          // Network error / client-side abort — retry silently
+        }
       }
-      if (!anRes.ok) throw new Error(anData.error || 'AI 分析失败')
+
+      // All attempts exhausted or got a non-retryable error
+      if (!anRes || !anRes.ok) {
+        const errMsg = anData.error && anData.error !== 'AI_TIMEOUT'
+          ? anData.error
+          : 'AI 分析暂时不可用，请稍等片刻后重试'
+        throw new Error(errMsg)
+      }
 
       // Step 3: navigate
       setCurrentStep(2)

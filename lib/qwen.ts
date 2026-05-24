@@ -329,10 +329,12 @@ export async function callQwenVL(
     { text: prompt },
   ]
 
-  // Hard 27s timeout — fires before Vercel Edge's 30s wall-clock limit
-  // so we get a clean error rather than a silent 504
+  // Hard 22s timeout — fires well before Vercel Edge's 30s wall-clock limit
+  // leaving 8s headroom for the response to be parsed and sent back to client.
+  // Keeping it at 22s (not 27s) ensures timeout errors are fast, so the client
+  // has time to retry within its own 40s window.
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 27000)
+  const timeoutId = setTimeout(() => controller.abort(), 22000)
 
   let response: Response
   try {
@@ -354,7 +356,7 @@ export async function callQwenVL(
   } catch (err) {
     clearTimeout(timeoutId)
     if (err instanceof Error && err.name === 'AbortError') {
-      throw new Error('AI 分析超时，请重试（建议使用 WiFi 或减少参考图）')
+      throw new Error('TIMEOUT')
     }
     throw err
   }
