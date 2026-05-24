@@ -452,28 +452,53 @@ export default function UploadPage() {
               参考示例 · 什么样的照片效果最好？
             </div>
             <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
-              {/* Good: clear face */}
+
+              {/* ✓ Card 1: clear frontal face — anime girl with big eyes + focus corners */}
               <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
                 <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F5F0E8" stroke="#E8D8B0" strokeWidth="1"/>
-                  <ellipse cx="26" cy="30" rx="13" ry="16" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="1"/>
-                  <ellipse cx="21" cy="27" rx="2" ry="2.5" fill="#4A3520"/>
-                  <ellipse cx="31" cy="27" rx="2" ry="2.5" fill="#4A3520"/>
-                  <path d="M19.5 23.5 Q21 22 22.5 23.5" stroke="#7A5C3A" strokeWidth="0.8" fill="none"/>
-                  <path d="M29.5 23.5 Q31 22 32.5 23.5" stroke="#7A5C3A" strokeWidth="0.8" fill="none"/>
-                  <ellipse cx="26" cy="31" rx="1.2" ry="1.5" fill="#D4A882"/>
-                  <path d="M22 36 Q26 39 30 36" stroke="#C06040" strokeWidth="1" fill="none"/>
-                  <rect x="23" y="45" width="6" height="7" rx="1.5" fill="#F5D5B0"/>
-                  <path d="M10 57 Q14 51 23 51 L29 51 Q38 51 42 57" fill="#E8C8A0" stroke="#C9A84C" strokeWidth="0.6"/>
-                  {/* focus lines */}
-                  <line x1="4" y1="2" x2="10" y2="2" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="4" y1="2" x2="4" y2="8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="48" y1="2" x2="42" y2="2" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="48" y1="2" x2="48" y2="8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="4" y1="62" x2="10" y2="62" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="4" y1="62" x2="4" y2="56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="48" y1="62" x2="42" y2="62" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="48" y1="62" x2="48" y2="56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round"/>
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#EEF8FF" stroke="#C8E0F0" strokeWidth="0.8"/>
+                  {/* hair */}
+                  <ellipse cx="26" cy="18" rx="15.5" ry="11.5" fill="#3C2010"/>
+                  <path d="M13 24 Q15 13 26 11 Q37 13 39 24 Q36 18 26 17 Q16 18 13 24Z" fill="#3C2010"/>
+                  <path d="M12 26 Q9 36 11 44 Q13 48 15 46 L15 26Z" fill="#3C2010"/>
+                  <path d="M40 26 Q43 36 41 44 Q39 48 37 46 L37 26Z" fill="#3C2010"/>
+                  {/* face */}
+                  <ellipse cx="26" cy="34" rx="13.5" ry="16" fill="#FDDBB4"/>
+                  <ellipse cx="12.5" cy="34" rx="2.5" ry="3" fill="#FDDBB4"/>
+                  <ellipse cx="39.5" cy="34" rx="2.5" ry="3" fill="#FDDBB4"/>
+                  {/* left eye — big anime style */}
+                  <ellipse cx="19.5" cy="30" rx="4.5" ry="5" fill="white" stroke="#3C2010" strokeWidth="0.5"/>
+                  <ellipse cx="19.5" cy="30.5" rx="3.5" ry="4" fill="#5A8EC4"/>
+                  <ellipse cx="19.5" cy="31" rx="2" ry="2.5" fill="#1A2030"/>
+                  <ellipse cx="21" cy="28.5" rx="1.3" ry="0.9" fill="white" opacity="0.95"/>
+                  <circle cx="18.5" cy="31.5" r="0.5" fill="white" opacity="0.7"/>
+                  <path d="M15 26.5 Q19.5 24.5 24 26.5" stroke="#3C2010" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                  {/* right eye */}
+                  <ellipse cx="32.5" cy="30" rx="4.5" ry="5" fill="white" stroke="#3C2010" strokeWidth="0.5"/>
+                  <ellipse cx="32.5" cy="30.5" rx="3.5" ry="4" fill="#5A8EC4"/>
+                  <ellipse cx="32.5" cy="31" rx="2" ry="2.5" fill="#1A2030"/>
+                  <ellipse cx="34" cy="28.5" rx="1.3" ry="0.9" fill="white" opacity="0.95"/>
+                  <circle cx="31.5" cy="31.5" r="0.5" fill="white" opacity="0.7"/>
+                  <path d="M28 26.5 Q32.5 24.5 37 26.5" stroke="#3C2010" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                  {/* eyebrows */}
+                  <path d="M15.5 24 Q19.5 21.5 24 23.5" stroke="#3C2010" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+                  <path d="M28 23.5 Q32.5 21.5 36.5 24" stroke="#3C2010" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+                  {/* nose tiny */}
+                  <path d="M24.5 36 Q26 37.5 27.5 36" stroke="#E8A880" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+                  {/* smile */}
+                  <path d="M22 40 Q26 44 30 40" stroke="#E05878" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+                  {/* rosy cheeks */}
+                  <ellipse cx="15" cy="37" rx="4.5" ry="2.5" fill="#FFB8C8" opacity="0.4"/>
+                  <ellipse cx="37" cy="37" rx="4.5" ry="2.5" fill="#FFB8C8" opacity="0.4"/>
+                  {/* neck */}
+                  <rect x="22" y="49" width="8" height="7" rx="2" fill="#FDDBB4"/>
+                  {/* outfit shoulder */}
+                  <path d="M8 62 Q14 55 22 53 L30 53 Q38 55 44 62Z" fill="#B0D8F8"/>
+                  {/* camera focus corners (green) */}
+                  <path d="M4 2 L10 2 M4 2 L4 8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  <path d="M48 2 L42 2 M48 2 L48 8" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  <path d="M4 62 L10 62 M4 62 L4 56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  <path d="M48 62 L42 62 M48 62 L48 56" stroke="#5A8A60" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
                 </svg>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
@@ -482,23 +507,59 @@ export default function UploadPage() {
                 <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">面部居中<br/>表情自然</div>
               </div>
 
-              {/* Good: even lighting */}
+              {/* ✓ Card 2: even lighting — warm glow, golden-brown eyes */}
               <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
                 <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#FFF8F0" stroke="#E8D8B0" strokeWidth="1"/>
-                  {/* sun/light source */}
-                  <circle cx="26" cy="10" r="5" fill="#F5C040" opacity="0.7"/>
-                  <line x1="26" y1="3" x2="26" y2="1" stroke="#F5C040" strokeWidth="1.2"/>
-                  <line x1="32" y1="5" x2="33.5" y2="3.5" stroke="#F5C040" strokeWidth="1.2"/>
-                  <line x1="20" y1="5" x2="18.5" y2="3.5" stroke="#F5C040" strokeWidth="1.2"/>
-                  {/* light rays on face */}
-                  <ellipse cx="26" cy="35" rx="13" ry="16" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="1"/>
-                  <ellipse cx="21" cy="32" rx="2" ry="2.5" fill="#4A3520"/>
-                  <ellipse cx="31" cy="32" rx="2" ry="2.5" fill="#4A3520"/>
-                  <path d="M22 41 Q26 44 30 41" stroke="#C06040" strokeWidth="1" fill="none"/>
-                  <rect x="23" y="50" width="6" height="6" rx="1.5" fill="#F5D5B0"/>
-                  {/* soft glow */}
-                  <ellipse cx="26" cy="35" rx="16" ry="19" fill="none" stroke="#F5D8A0" strokeWidth="2" opacity="0.5"/>
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#FFFBEE" stroke="#E8D8A0" strokeWidth="0.8"/>
+                  {/* sun */}
+                  <circle cx="26" cy="9" r="4" fill="#F8D040" opacity="0.85"/>
+                  <line x1="26" y1="3" x2="26" y2="1.5" stroke="#F8D040" strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="31" y1="5.5" x2="32.5" y2="4" stroke="#F8D040" strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="21" y1="5.5" x2="19.5" y2="4" stroke="#F8D040" strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="33" y1="9" x2="35" y2="9" stroke="#F8D040" strokeWidth="1.3" strokeLinecap="round"/>
+                  <line x1="19" y1="9" x2="17" y2="9" stroke="#F8D040" strokeWidth="1.3" strokeLinecap="round"/>
+                  {/* glow aura */}
+                  <ellipse cx="26" cy="36" rx="17" ry="20" fill="#FFF5D0" opacity="0.45"/>
+                  {/* hair — warm honey brown */}
+                  <ellipse cx="26" cy="20" rx="14.5" ry="11" fill="#6A4020"/>
+                  <path d="M14 26 Q16 16 26 13 Q36 16 38 26 Q35 20 26 19 Q17 20 14 26Z" fill="#6A4020"/>
+                  <path d="M13 27 Q11 37 13 43 Q15 47 17 45 L17 27Z" fill="#6A4020"/>
+                  <path d="M39 27 Q41 37 39 43 Q37 47 35 45 L35 27Z" fill="#6A4020"/>
+                  {/* face — warmer skin */}
+                  <ellipse cx="26" cy="35" rx="13.5" ry="16" fill="#FFD4A0"/>
+                  <ellipse cx="12.5" cy="35" rx="2.5" ry="3" fill="#FFD4A0"/>
+                  <ellipse cx="39.5" cy="35" rx="2.5" ry="3" fill="#FFD4A0"/>
+                  {/* left eye — warm brown iris */}
+                  <ellipse cx="19.5" cy="31" rx="4.5" ry="5" fill="white" stroke="#3C2010" strokeWidth="0.5"/>
+                  <ellipse cx="19.5" cy="31.5" rx="3.5" ry="4" fill="#8A6030"/>
+                  <ellipse cx="19.5" cy="32" rx="2" ry="2.5" fill="#1A1010"/>
+                  <ellipse cx="21" cy="29.5" rx="1.3" ry="0.9" fill="white" opacity="0.95"/>
+                  <circle cx="18.5" cy="32.5" r="0.5" fill="white" opacity="0.7"/>
+                  <path d="M15 27.5 Q19.5 25.5 24 27.5" stroke="#3C2010" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                  {/* right eye */}
+                  <ellipse cx="32.5" cy="31" rx="4.5" ry="5" fill="white" stroke="#3C2010" strokeWidth="0.5"/>
+                  <ellipse cx="32.5" cy="31.5" rx="3.5" ry="4" fill="#8A6030"/>
+                  <ellipse cx="32.5" cy="32" rx="2" ry="2.5" fill="#1A1010"/>
+                  <ellipse cx="34" cy="29.5" rx="1.3" ry="0.9" fill="white" opacity="0.95"/>
+                  <circle cx="31.5" cy="32.5" r="0.5" fill="white" opacity="0.7"/>
+                  <path d="M28 27.5 Q32.5 25.5 37 27.5" stroke="#3C2010" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                  {/* eyebrows */}
+                  <path d="M15.5 25 Q19.5 22.5 24 24.5" stroke="#3C2010" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+                  <path d="M28 24.5 Q32.5 22.5 36.5 25" stroke="#3C2010" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+                  {/* nose */}
+                  <path d="M24.5 37 Q26 38.5 27.5 37" stroke="#D89060" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+                  {/* smile */}
+                  <path d="M22 41 Q26 45 30 41" stroke="#D05870" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+                  {/* warm cheeks */}
+                  <ellipse cx="15" cy="38" rx="4.5" ry="2.5" fill="#FFA070" opacity="0.38"/>
+                  <ellipse cx="37" cy="38" rx="4.5" ry="2.5" fill="#FFA070" opacity="0.38"/>
+                  {/* neck */}
+                  <rect x="22" y="50" width="8" height="7" rx="2" fill="#FFD4A0"/>
+                  {/* outfit */}
+                  <path d="M8 62 Q14 56 22 54 L30 54 Q38 56 44 62Z" fill="#F8B8C8"/>
+                  {/* sparkle dots */}
+                  <circle cx="8" cy="16" r="1.2" fill="#F8D040" opacity="0.65"/>
+                  <circle cx="45" cy="22" r="0.9" fill="#F8D040" opacity="0.55"/>
                 </svg>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
@@ -507,26 +568,61 @@ export default function UploadPage() {
                 <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">自然光照<br/>避免阴影</div>
               </div>
 
-              {/* Good: full body */}
+              {/* ✓ Card 3: full body — small but complete anime figure with cute dress */}
               <div className="flex-shrink-0 w-[88px] bg-[var(--cream)] border border-[#C8E6C9] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
                 <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F5F0E8" stroke="#E8D8B0" strokeWidth="1"/>
-                  {/* full body figure */}
-                  <circle cx="26" cy="14" r="7" fill="#F5D5B0" stroke="#C9A84C" strokeWidth="0.8"/>
-                  <ellipse cx="21.5" cy="13" rx="1.5" ry="1.8" fill="#4A3520"/>
-                  <ellipse cx="30.5" cy="13" rx="1.5" ry="1.8" fill="#4A3520"/>
-                  <path d="M23 18 Q26 20.5 29 18" stroke="#C06040" strokeWidth="0.9" fill="none"/>
-                  {/* torso */}
-                  <path d="M17 22 Q14 24 13 35 L18 35 L18 46 L24 46 L24 35 L28 35 L28 46 L34 46 L34 35 L39 35 Q38 24 35 22 Q30 20 26 21 Q22 20 17 22Z" fill="#E8C8A8" stroke="#C9A84C" strokeWidth="0.7"/>
-                  {/* legs */}
-                  <rect x="18" y="45" width="7" height="15" rx="3" fill="#C8A878"/>
-                  <rect x="27" y="45" width="7" height="15" rx="3" fill="#C8A878"/>
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F5F0FF" stroke="#C8C0F0" strokeWidth="0.8"/>
+                  {/* hair */}
+                  <ellipse cx="26" cy="9.5" rx="9.5" ry="7" fill="#3C2010"/>
+                  <path d="M17.5 13.5 Q16 8 26 6 Q36 8 34.5 13.5 Q32 10 26 9.5 Q20 10 17.5 13.5Z" fill="#3C2010"/>
+                  <path d="M17 15 Q15 21 16 25 Q17 27 18.5 26.5 L18.5 15Z" fill="#3C2010"/>
+                  <path d="M35 15 Q37 21 36 25 Q35 27 33.5 26.5 L33.5 15Z" fill="#3C2010"/>
+                  {/* face */}
+                  <ellipse cx="26" cy="14" rx="8.5" ry="9.5" fill="#FDDBB4"/>
+                  <ellipse cx="17.5" cy="14" rx="1.8" ry="2.2" fill="#FDDBB4"/>
+                  <ellipse cx="34.5" cy="14" rx="1.8" ry="2.2" fill="#FDDBB4"/>
+                  {/* left eye — small but anime */}
+                  <ellipse cx="22.5" cy="12.5" rx="3" ry="3.5" fill="white" stroke="#3C2010" strokeWidth="0.4"/>
+                  <ellipse cx="22.5" cy="13" rx="2.3" ry="2.7" fill="#5A8EC4"/>
+                  <ellipse cx="22.5" cy="13.3" rx="1.4" ry="1.7" fill="#1A2030"/>
+                  <ellipse cx="23.4" cy="12" rx="0.9" ry="0.65" fill="white" opacity="0.9"/>
+                  <path d="M19.8 10.5 Q22.5 9.2 25.2 10.5" stroke="#3C2010" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+                  {/* right eye */}
+                  <ellipse cx="29.5" cy="12.5" rx="3" ry="3.5" fill="white" stroke="#3C2010" strokeWidth="0.4"/>
+                  <ellipse cx="29.5" cy="13" rx="2.3" ry="2.7" fill="#5A8EC4"/>
+                  <ellipse cx="29.5" cy="13.3" rx="1.4" ry="1.7" fill="#1A2030"/>
+                  <ellipse cx="30.4" cy="12" rx="0.9" ry="0.65" fill="white" opacity="0.9"/>
+                  <path d="M26.8 10.5 Q29.5 9.2 32.2 10.5" stroke="#3C2010" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+                  {/* eyebrows */}
+                  <path d="M19.5 9.5 Q22.5 7.8 25.5 9.5" stroke="#3C2010" strokeWidth="1.0" fill="none" strokeLinecap="round"/>
+                  <path d="M26.5 9.5 Q29.5 7.8 32.5 9.5" stroke="#3C2010" strokeWidth="1.0" fill="none" strokeLinecap="round"/>
+                  {/* nose */}
+                  <path d="M25.2 16 Q26 17 26.8 16" stroke="#E8A880" strokeWidth="0.7" fill="none" strokeLinecap="round"/>
+                  {/* mouth */}
+                  <path d="M23.5 19 Q26 21.5 28.5 19" stroke="#E05878" strokeWidth="1.0" fill="none" strokeLinecap="round"/>
+                  {/* cheeks */}
+                  <ellipse cx="19.5" cy="16.5" rx="3" ry="1.7" fill="#FFB8C8" opacity="0.4"/>
+                  <ellipse cx="32.5" cy="16.5" rx="3" ry="1.7" fill="#FFB8C8" opacity="0.4"/>
+                  {/* neck */}
+                  <rect x="23.5" y="23" width="5" height="4" rx="1.5" fill="#FDDBB4"/>
+                  {/* dress */}
+                  <path d="M17 27 Q15 39 16 49 L19 49 L21 37 L26 39 L31 37 L33 49 L36 49 Q37 39 35 27 Q31 25 26 25 Q21 25 17 27Z" fill="#C8A0F8"/>
+                  {/* collar detail */}
+                  <path d="M21 27 Q26 29.5 31 27 Q29 25 26 25 Q23 25 21 27Z" fill="#E8D8FF"/>
                   {/* arms */}
-                  <path d="M17 23 Q11 28 12 36" stroke="#F5D5B0" strokeWidth="4" strokeLinecap="round"/>
-                  <path d="M35 23 Q41 28 40 36" stroke="#F5D5B0" strokeWidth="4" strokeLinecap="round"/>
-                  {/* bracket lines */}
-                  <line x1="6" y1="6" x2="6" y2="60" stroke="#5A8A60" strokeWidth="1" strokeDasharray="2 2" opacity="0.5"/>
-                  <line x1="46" y1="6" x2="46" y2="60" stroke="#5A8A60" strokeWidth="1" strokeDasharray="2 2" opacity="0.5"/>
+                  <path d="M17 28 Q13 33 14 39" stroke="#FDDBB4" strokeWidth="3.5" strokeLinecap="round"/>
+                  <path d="M35 28 Q39 33 38 39" stroke="#FDDBB4" strokeWidth="3.5" strokeLinecap="round"/>
+                  {/* legs */}
+                  <rect x="19" y="48" width="5.5" height="12" rx="2.5" fill="#FDDBB4"/>
+                  <rect x="27.5" y="48" width="5.5" height="12" rx="2.5" fill="#FDDBB4"/>
+                  {/* shoes */}
+                  <ellipse cx="21.5" cy="61" rx="4" ry="2" fill="#7A5A40"/>
+                  <ellipse cx="30.5" cy="61" rx="4" ry="2" fill="#7A5A40"/>
+                  {/* measurement side lines */}
+                  <line x1="6" y1="5" x2="6" y2="61" stroke="#5A8A60" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
+                  <line x1="46" y1="5" x2="46" y2="61" stroke="#5A8A60" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5"/>
+                  <line x1="5" y1="5" x2="8" y2="5" stroke="#5A8A60" strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="5" y1="61" x2="8" y2="61" stroke="#5A8A60" strokeWidth="1.2" strokeLinecap="round"/>
                 </svg>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-bold text-[#5A8A60]">✓</span>
@@ -535,25 +631,37 @@ export default function UploadPage() {
                 <div className="text-[8.5px] text-[var(--warm-gray)] text-center leading-relaxed">整体可见<br/>站直居中</div>
               </div>
 
-              {/* Bad: backlit / covered */}
+              {/* ✗ Card 4: please avoid — dark silhouette + sunglasses + mask */}
               <div className="flex-shrink-0 w-[88px] bg-[#FFF5F5] border border-[#FFCCCC] rounded-2xl p-2.5 flex flex-col items-center gap-1.5">
                 <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#F8E8E8" stroke="#E8C0C0" strokeWidth="1"/>
-                  {/* bright window behind = backlit */}
-                  <rect x="10" y="8" width="32" height="26" rx="3" fill="#FFF8D0" stroke="#F0D080" strokeWidth="0.5"/>
-                  {/* dark silhouette face */}
-                  <ellipse cx="26" cy="36" rx="13" ry="16" fill="#4A3520"/>
-                  {/* mask / cover overlay */}
-                  <rect x="15" y="36" width="22" height="12" rx="5" fill="#2D2D2D" opacity="0.7"/>
+                  <rect x="4" y="2" width="44" height="60" rx="6" fill="#FFF0F0" stroke="#F0C0C0" strokeWidth="0.8"/>
+                  {/* bright backlit window */}
+                  <rect x="9" y="5" width="34" height="26" rx="3" fill="#FFFBE0" stroke="#F0D080" strokeWidth="0.5"/>
+                  <line x1="26" y1="5" x2="26" y2="31" stroke="#F0D080" strokeWidth="0.5" opacity="0.5"/>
+                  <line x1="9" y1="18" x2="43" y2="18" stroke="#F0D080" strokeWidth="0.5" opacity="0.5"/>
+                  {/* dark anime hair silhouette */}
+                  <ellipse cx="26" cy="26" rx="16" ry="12" fill="#1A1008"/>
+                  <path d="M12 30 Q10 40 12 46 Q14 50 16 48 L16 30Z" fill="#1A1008"/>
+                  <path d="M40 30 Q42 40 40 46 Q38 50 36 48 L36 30Z" fill="#1A1008"/>
+                  {/* dark face silhouette */}
+                  <ellipse cx="26" cy="38" rx="13.5" ry="16" fill="#2A1810"/>
+                  <ellipse cx="12.5" cy="38" rx="2.5" ry="3" fill="#2A1810"/>
+                  <ellipse cx="39.5" cy="38" rx="2.5" ry="3" fill="#2A1810"/>
                   {/* sunglasses */}
-                  <rect x="16" y="27" width="8" height="6" rx="3" fill="#2D2D2D"/>
-                  <rect x="28" y="27" width="8" height="6" rx="3" fill="#2D2D2D"/>
-                  <line x1="24" y1="30" x2="28" y2="30" stroke="#2D2D2D" strokeWidth="1.5"/>
-                  {/* X marks */}
-                  <line x1="14" y1="54" x2="20" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="20" y1="54" x2="14" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="32" y1="54" x2="38" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="38" y1="54" x2="32" y2="60" stroke="#C05040" strokeWidth="2" strokeLinecap="round"/>
+                  <rect x="15" y="32" width="9" height="6.5" rx="3.2" fill="#1A1A2A"/>
+                  <rect x="28" y="32" width="9" height="6.5" rx="3.2" fill="#1A1A2A"/>
+                  <line x1="24" y1="35.3" x2="28" y2="35.3" stroke="#1A1A2A" strokeWidth="1.5"/>
+                  {/* lens glare */}
+                  <line x1="17" y1="33.5" x2="20.5" y2="33.5" stroke="white" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <line x1="30" y1="33.5" x2="33.5" y2="33.5" stroke="white" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  {/* mask */}
+                  <rect x="15.5" y="41" width="21" height="10.5" rx="4" fill="#E0E0E0"/>
+                  <path d="M15.5 45.5 Q26 48 36.5 45.5" stroke="#C8C8C8" strokeWidth="0.9" fill="none"/>
+                  {/* big red X marks at bottom */}
+                  <line x1="8" y1="53" x2="16" y2="61" stroke="#E04030" strokeWidth="2.5" strokeLinecap="round"/>
+                  <line x1="16" y1="53" x2="8" y2="61" stroke="#E04030" strokeWidth="2.5" strokeLinecap="round"/>
+                  <line x1="36" y1="53" x2="44" y2="61" stroke="#E04030" strokeWidth="2.5" strokeLinecap="round"/>
+                  <line x1="44" y1="53" x2="36" y2="61" stroke="#E04030" strokeWidth="2.5" strokeLinecap="round"/>
                 </svg>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-bold text-[#C05040]">✗</span>
@@ -561,6 +669,7 @@ export default function UploadPage() {
                 </div>
                 <div className="text-[8.5px] text-[#C05040] text-center leading-relaxed">背光/遮挡<br/>墨镜/口罩</div>
               </div>
+
             </div>
           </div>
 
