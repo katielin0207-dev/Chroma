@@ -8,6 +8,7 @@ import {
   MODE_SPECIAL_OCCASION_ADDON,
 } from '@/lib/qwen'
 import { parseAnalysisResult, ParseError } from '@/lib/parse-analysis'
+import { SEASON_PALETTES } from '@/lib/season-palettes'
 import type { AnalysisMode } from '@/types/analysis'
 
 // Edge runtime: 30s timeout even on Vercel Hobby (vs 10s serverless limit)
@@ -120,6 +121,28 @@ export async function POST(req: NextRequest) {
     }
 
     const result = parseAnalysisResult(rawText)
+
+    // ── Override color swatches with hardcoded season palettes ───────────────
+    // Qwen often hallucinates hex values. We let it determine the SEASON only,
+    // then replace bestColors/avoidColors/coloringPrinciple with our curated data.
+    const detectedSeason = result.colorSeason?.season
+    if (detectedSeason && SEASON_PALETTES[detectedSeason]) {
+      const palette = SEASON_PALETTES[detectedSeason]
+      result.colorSeason.bestColors = palette.bestColors
+      result.colorSeason.avoidColors = palette.avoidColors
+      result.colorSeason.coloringPrinciple = palette.coloringPrinciple
+
+      // Also fix occasion color dots: replace Qwen's hallucinated hex values
+      // with actual colors from the season palette, cycling through best colors
+      if (result.occasions?.length) {
+        result.occasions = result.occasions.map((occ, i) => ({
+          ...occ,
+          colors: palette.bestColors
+            .slice(i % 2 === 0 ? 0 : 1, (i % 2 === 0 ? 0 : 1) + 3)
+            .map((c) => c.hex),
+        }))
+      }
+    }
 
     // Force clear bodyShape for face-only photos
     if (photoType !== 'full') {
