@@ -596,9 +596,60 @@ export default function ResultsPage() {
           <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">穿搭风格</div>
           <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-3">{style.primaryStyle}</h2>
 
+          {/* Style Goal Feedback — only shown when user selected style goals */}
+          {style.styleGoalFeedbacks && style.styleGoalFeedbacks.length > 0 && (
+            <div className="mb-5">
+              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2.5">✦ 你想要的风格，AI 怎么看</div>
+              <div className="space-y-2.5">
+                {style.styleGoalFeedbacks.map((fb) => {
+                  const fitConfig = {
+                    perfect: {
+                      bg: 'bg-[#EEF6EE]',
+                      border: 'border-[#5A8A60]/30',
+                      badgeBg: 'bg-[#5A8A60]',
+                      icon: '✓',
+                    },
+                    partial: {
+                      bg: 'bg-[#FDF6EE]',
+                      border: 'border-[var(--gold)]/30',
+                      badgeBg: 'bg-[var(--gold)]',
+                      icon: '◐',
+                    },
+                    conflict: {
+                      bg: 'bg-[#FDF0EE]',
+                      border: 'border-[#B05040]/30',
+                      badgeBg: 'bg-[#B05040]',
+                      icon: '△',
+                    },
+                  }[fb.fit] ?? {
+                    bg: 'bg-white',
+                    border: 'border-[var(--border)]',
+                    badgeBg: 'bg-[var(--warm-gray)]',
+                    icon: '?',
+                  }
+                  return (
+                    <div key={fb.goal} className={`p-3.5 rounded-xl border ${fitConfig.bg} ${fitConfig.border}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] text-white font-medium ${fitConfig.badgeBg}`}>
+                          {fitConfig.icon} {fb.fitLabel}
+                        </span>
+                        <span className="text-xs font-medium text-[var(--charcoal)]">{fb.goal}</span>
+                      </div>
+                      <p className="text-[11px] text-[var(--charcoal)] leading-relaxed mb-1.5">{fb.reason}</p>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-[10px] text-[var(--gold)] font-medium mt-0.5 shrink-0">💡</span>
+                        <p className="text-[11px] text-[var(--warm-gray)] leading-relaxed">{fb.tip}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Why */}
           <div className="p-3 bg-white rounded-xl border border-[var(--border)] mb-4 text-xs text-[var(--warm-gray)] leading-relaxed">
-            <div className="text-[var(--gold)] text-[10px] tracking-[1px] mb-1.5">为什么适合你</div>
+            <div className="text-[var(--gold)] text-[10px] tracking-[1px] mb-1.5">AI 为你推荐的风格方向</div>
             {style.whyItSuitsYou}
           </div>
 

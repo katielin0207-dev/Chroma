@@ -39,6 +39,14 @@ export interface OutfitFormula {
   accessory: string
 }
 
+export interface StyleGoalFeedback {
+  goal: string                              // e.g. "甜美可爱"
+  fit: 'perfect' | 'partial' | 'conflict'
+  fitLabel: string                          // "非常适合" | "可以融合" | "有些冲突"
+  reason: string                            // 40字以内，脸型/季型/身材的具体分析
+  tip: string                               // 40字以内，最佳实践或折中方案
+}
+
 export interface StyleAnalysis {
   primaryStyle: string
   styleKeywords: string[]
@@ -46,6 +54,7 @@ export interface StyleAnalysis {
   brandInspirations: string[]
   outfitFormula: OutfitFormula
   whyItSuitsYou: string
+  styleGoalFeedbacks?: StyleGoalFeedback[]  // present only when user specified style goals
 }
 
 export interface OccasionSet {

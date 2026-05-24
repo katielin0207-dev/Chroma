@@ -61,7 +61,13 @@ export async function POST(req: NextRequest) {
         lines.push(`· 改变形象的目的：${userProfile.imagePurpose} → occasions 中与该目的最匹配的场合要最详细`)
       }
       if (userProfile.styleGoals?.length) {
-        lines.push(`· 期望的风格方向：${userProfile.styleGoals.join('、')} → style.primaryStyle 必须从以上方向选择或融合；whyItSuitsYou 要结合用户目标；outfitFormula 要体现该风格`)
+        lines.push(`· 期望的风格方向：${userProfile.styleGoals.join('、')}`)
+        lines.push(`  → 必须在 style.styleGoalFeedbacks 数组中对每个风格逐一评估，格式如下：`)
+        lines.push(`    fit: "perfect"（脸型/季型/身材高度契合）| "partial"（部分元素可用，需选择性融合）| "conflict"（与核心特征有冲突）`)
+        lines.push(`    fitLabel: "非常适合" | "可以融合" | "有些冲突"（与 fit 对应）`)
+        lines.push(`    reason: 40字以内，具体说明脸型/季型/身材哪些特征导致这个判断`)
+        lines.push(`    tip: 40字以内，适合时给最佳实践，不适合时给可行的折中方案（如：保留某风格的色系，但换掉某类廓形）`)
+        lines.push(`  → style.primaryStyle 从以上方向中选 fit 最好的，或融合多个；outfitFormula 体现该风格`)
       }
       lines.push('以上用户信息优先级高于通用建议。')
       profileBlock += lines.join('\n')
