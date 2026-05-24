@@ -327,23 +327,28 @@ export default function ResultsPage() {
       <main className="pt-[88px] pb-20 px-4 max-w-lg mx-auto space-y-6">
         {/* Header card */}
         <div id="share-card" className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3">
             {imageUrl && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={imageUrl} alt="你的照片" className="w-14 h-14 rounded-full object-cover border-2 border-[var(--gold)]" />
             )}
-            <div>
-              <div className="font-serif text-base font-medium text-[var(--charcoal)]">个人形象诊断报告</div>
-              <div className="text-xs text-[var(--warm-gray)]">焕颜AI · 专业形象顾问体系</div>
+            <div className="flex-1 min-w-0">
+              <div className="font-serif text-lg font-medium text-[var(--charcoal)] mb-1">{colorSeason.season}</div>
+              <div className="flex gap-1.5 flex-wrap">
+                <span className="px-2 py-0.5 text-[10px] bg-[var(--ivory)] text-[var(--warm-gray)] rounded-full">{faceShape.faceShape}</span>
+                {hasBodyShape && <span className="px-2 py-0.5 text-[10px] bg-[var(--ivory)] text-[var(--warm-gray)] rounded-full">{bodyShape.bodyShape}</span>}
+                <span className="px-2 py-0.5 text-[10px] bg-[var(--ivory)] text-[var(--warm-gray)] rounded-full">{style.primaryStyle}</span>
+              </div>
             </div>
-            <span className="ml-auto px-3 py-1 bg-[var(--gold)] text-white text-xs rounded-full">
-              {colorSeason.season}
-            </span>
-          </div>
-          <div className="flex gap-2 text-xs text-[var(--warm-gray)] flex-wrap">
-            <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{faceShape.faceShape}</span>
-            {hasBodyShape && <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{bodyShape.bodyShape}</span>}
-            <span className="px-2 py-0.5 bg-[var(--ivory)] rounded-full">{style.primaryStyle}</span>
+            <button
+              onClick={handleShare}
+              className="flex-shrink-0 p-2.5 rounded-2xl bg-[var(--charcoal)] text-white hover:bg-[var(--gold)] transition-colors"
+              title="保存报告"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -472,61 +477,70 @@ export default function ResultsPage() {
         )}
 
         {/* Section 0: Color Season */}
-        <section ref={(el) => { sectionRefs.current[0] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-          <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">色彩季型</div>
-          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{colorSeason.season}</h2>
-          <p className="text-sm text-[var(--warm-gray)] leading-relaxed mb-4">{colorSeason.description}</p>
+        <section ref={(el) => { sectionRefs.current[0] = el }} className="overflow-hidden bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
 
-          {/* Three-dimensional features — Carol Jackson theory transparency */}
-          {colorSeason.dimensions && (
-            <div className="mb-4 p-3 bg-white rounded-xl border border-[var(--border)]">
-              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">判断依据 · 三维特征</div>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center">
-                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">色温</div>
-                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.temperature}</div>
-                </div>
-                <div className="text-center border-x border-[var(--border)]">
-                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">明度</div>
-                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.brightness}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-[10px] text-[var(--warm-gray)] mb-0.5">纯度</div>
-                  <div className="text-sm font-medium text-[var(--charcoal)]">{colorSeason.dimensions.saturation}</div>
-                </div>
+          {/* Season identity hero — dark panel */}
+          <div className="px-5 py-5" style={{ background: 'linear-gradient(135deg, #1C1814 0%, #2D2418 100%)' }}>
+            <div className="text-[9px] tracking-[3px] text-white/40 mb-2 uppercase">Color Season</div>
+            <div className="font-serif text-2xl font-medium text-white mb-3">{colorSeason.season}</div>
+            {colorSeason.dimensions && (
+              <div className="flex gap-2">
+                <span className="px-2.5 py-1 rounded-full text-[10px] text-white/80 bg-white/10">{colorSeason.dimensions.temperature}调</span>
+                <span className="px-2.5 py-1 rounded-full text-[10px] text-white/80 bg-white/10">{colorSeason.dimensions.brightness}明度</span>
+                <span className="px-2.5 py-1 rounded-full text-[10px] text-white/80 bg-white/10">{colorSeason.dimensions.saturation}纯度</span>
               </div>
-              <div className="mt-2 text-[10px] text-[var(--warm-gray)] text-center leading-relaxed">
-                基于 Carol Jackson 十二色彩季型体系
-              </div>
-            </div>
-          )}
-
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✦ 专属色板 · 最佳色彩</div>
-          <div className="flex flex-wrap gap-4 mb-4">
-            {colorSeason.bestColors.map((c) => <ColorSwatch key={c.name} swatch={c} />)}
+            )}
           </div>
 
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✗ 需要回避</div>
-          <div className="flex flex-wrap gap-4 mb-4">
-            {colorSeason.avoidColors.map((c) => <ColorSwatch key={c.name} swatch={c} faded />)}
-          </div>
+          <div className="p-5">
+            <p className="text-sm text-[var(--warm-gray)] leading-relaxed mb-6">{colorSeason.description}</p>
 
-          {colorSeason.coloringPrinciple && (
-            <div className="px-4 py-3 bg-white rounded-xl border-l-2 border-[var(--gold)] text-xs text-[var(--warm-gray)] leading-relaxed">
-              <span className="text-[var(--gold)] font-medium">搭配原则：</span>{colorSeason.coloringPrinciple}
+            {/* Best colors — split: statement (0-2) + everyday (3-5) */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-[var(--charcoal)]">你的色盘</span>
+                <span className="text-[10px] text-[var(--warm-gray)]">长按截图随身带</span>
+              </div>
+              <div className="text-[10px] text-[var(--gold)] mb-2 mt-3">提气色</div>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {colorSeason.bestColors.slice(0, 3).map((c) => <ColorSwatch key={c.name} swatch={c} />)}
+              </div>
+              <div className="text-[10px] text-[var(--warm-gray)] mb-2">日常百搭</div>
+              <div className="grid grid-cols-3 gap-3">
+                {colorSeason.bestColors.slice(3).map((c) => <ColorSwatch key={c.name} swatch={c} />)}
+              </div>
             </div>
-          )}
+
+            {/* Avoid colors */}
+            <div className="mb-5">
+              <div className="text-[10px] text-[var(--warm-gray)] mb-2">回避色系</div>
+              <div className="grid grid-cols-3 gap-3">
+                {colorSeason.avoidColors.map((c) => <ColorSwatch key={c.name} swatch={c} faded />)}
+              </div>
+            </div>
+
+            {/* Coloring principle */}
+            {colorSeason.coloringPrinciple && (
+              <div className="text-xs text-[var(--warm-gray)] leading-relaxed pt-4 border-t border-[var(--border)]">
+                {colorSeason.coloringPrinciple}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Section 1: Face Shape */}
         <section ref={(el) => { sectionRefs.current[1] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-          <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">脸型分析</div>
-          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{faceShape.faceShape}</h2>
-          <ul className="text-sm text-[var(--warm-gray)] mb-4 space-y-1">
-            {faceShape.characteristics.map((c) => <li key={c}>· {c}</li>)}
-          </ul>
+          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-3">{faceShape.faceShape}</h2>
 
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✦ 推荐领型</div>
+          {/* Characteristics as pills — cleaner than bullet list */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {faceShape.characteristics.map((c) => (
+              <span key={c} className="px-3 py-1 text-xs bg-white border border-[var(--border)] text-[var(--warm-gray)] rounded-full">{c}</span>
+            ))}
+          </div>
+
+          {/* Neckline recs */}
+          <div className="text-xs font-medium text-[var(--charcoal)] mb-2">推荐领型</div>
           <div className="grid grid-cols-3 gap-2 mb-4">
             {faceShape.necklineRecs.map((n) => (
               <div key={n.name} className="p-3 bg-white rounded-xl text-center border border-[var(--border)]">
@@ -538,22 +552,20 @@ export default function ResultsPage() {
 
           {faceShape.avoidNecklineRecs && faceShape.avoidNecklineRecs.length > 0 && (
             <>
-              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✗ 不适合的领型</div>
+              <div className="text-xs font-medium text-[var(--charcoal)] mb-2">回避领型</div>
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {faceShape.avoidNecklineRecs.map((n) => (
-                  <div key={n.name} className="p-3 bg-white rounded-xl text-center border" style={{ borderColor: 'rgba(192,80,64,0.2)', background: 'rgba(192,80,64,0.03)' }}>
+                  <div key={n.name} className="p-3 rounded-xl text-center border" style={{ borderColor: 'rgba(192,80,64,0.2)', background: 'rgba(192,80,64,0.03)' }}>
                     <div className="font-medium text-sm text-[var(--charcoal)] mb-1">{n.name}</div>
-                    <div className="text-[10px] leading-tight" style={{ color: 'var(--red-no)', opacity: 0.8 }}>{n.why}</div>
+                    <div className="text-[10px] leading-tight" style={{ color: '#B05040' }}>{n.why}</div>
                   </div>
                 ))}
               </div>
             </>
           )}
 
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 发型建议</div>
-          <div className="text-[10px] text-[var(--warm-gray)] mb-3 leading-relaxed">
-            点击复制关键词 → 去小红书搜索参考图
-          </div>
+          {/* Hairstyle — copy chips */}
+          <div className="text-xs font-medium text-[var(--charcoal)] mb-2">发型参考</div>
           <div className="flex flex-wrap gap-2">
             {faceShape.hairstyleRecs.map((h) => (
               <CopyKeyword key={h} keyword={h + ' 发型'} hint="已复制，去小红书搜索参考图" />
@@ -564,28 +576,27 @@ export default function ResultsPage() {
         {/* Section 2: Body Shape — only shown when full-body photo was analyzed */}
         {hasBodyShape && (
           <section ref={(el) => { sectionRefs.current[2] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-            <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">身材分析</div>
             <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-2">{bodyShape.bodyShape}</h2>
             <p className="text-sm text-[var(--warm-gray)] mb-4 leading-relaxed">{bodyShape.description}</p>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-3 rounded-xl border bg-white border-[var(--border)]" style={{ borderColor: 'rgba(90,138,96,0.2)', background: 'rgba(90,138,96,0.04)' }}>
-                <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--green-ok)' }}>✓ 推荐廓形</div>
+              <div className="p-3 rounded-xl" style={{ borderColor: 'rgba(90,138,96,0.2)', background: 'rgba(90,138,96,0.04)', border: '1px solid rgba(90,138,96,0.2)' }}>
+                <div className="text-[10px] font-medium mb-2" style={{ color: '#5A8A60' }}>推荐廓形</div>
                 <ul className="space-y-1 text-xs text-[var(--charcoal)]">
-                  {bodyShape.silhouetteRecs.map((s) => <li key={s}>· {s}</li>)}
+                  {bodyShape.silhouetteRecs.map((s) => <li key={s}>{s}</li>)}
                 </ul>
               </div>
-              <div className="p-3 rounded-xl border" style={{ borderColor: 'rgba(192,80,64,0.15)', background: 'rgba(192,80,64,0.04)' }}>
-                <div className="text-[10px] tracking-[1px] mb-2" style={{ color: 'var(--red-no)' }}>✗ 避免廓形</div>
+              <div className="p-3 rounded-xl" style={{ borderColor: 'rgba(192,80,64,0.15)', background: 'rgba(192,80,64,0.04)', border: '1px solid rgba(192,80,64,0.15)' }}>
+                <div className="text-[10px] font-medium mb-2" style={{ color: '#B05040' }}>回避廓形</div>
                 <ul className="space-y-1 text-xs text-[var(--charcoal)]">
-                  {bodyShape.avoidSilhouettes.map((s) => <li key={s}>· {s}</li>)}
+                  {bodyShape.avoidSilhouettes.map((s) => <li key={s}>{s}</li>)}
                 </ul>
               </div>
             </div>
 
             {bodyShape.expertTip && (
-              <div className="px-4 py-3 bg-white rounded-xl border-l-2 border-[var(--gold)] text-xs text-[var(--warm-gray)] leading-relaxed">
-                <span className="text-[var(--gold)] font-medium">专业提示：</span>{bodyShape.expertTip}
+              <div className="text-xs text-[var(--warm-gray)] leading-relaxed pt-4 border-t border-[var(--border)]">
+                {bodyShape.expertTip}
               </div>
             )}
           </section>
@@ -593,8 +604,7 @@ export default function ResultsPage() {
 
         {/* Section 3: Style */}
         <section ref={(el) => { sectionRefs.current[3] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-          <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">穿搭风格</div>
-          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-3">{style.primaryStyle}</h2>
+          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-4">{style.primaryStyle}</h2>
 
           {/* Style Goal Feedback — only shown when user selected style goals */}
           {style.styleGoalFeedbacks && style.styleGoalFeedbacks.length > 0 && (
@@ -647,17 +657,23 @@ export default function ResultsPage() {
             </div>
           )}
 
-          {/* Why */}
-          <div className="p-3 bg-white rounded-xl border border-[var(--border)] mb-4 text-xs text-[var(--warm-gray)] leading-relaxed">
-            <div className="text-[var(--gold)] text-[10px] tracking-[1px] mb-1.5">AI 为你推荐的风格方向</div>
+          {/* Why it suits you */}
+          <div className="text-xs text-[var(--warm-gray)] leading-relaxed mb-5 pb-5 border-b border-[var(--border)]">
             {style.whyItSuitsYou}
           </div>
 
+          {/* Style keywords */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {style.styleKeywords.map((k) => (
+              <span key={k} className="px-3 py-1.5 text-xs bg-[var(--gold)] text-white rounded-full">{k}</span>
+            ))}
+          </div>
+
           {/* Outfit formula */}
-          <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-3">✦ 专属穿搭公式</div>
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="text-xs font-medium text-[var(--charcoal)] mb-2">穿搭公式</div>
+          <div className="grid grid-cols-2 gap-2 mb-5">
             {Object.entries(style.outfitFormula).map(([key, val]) => {
-              const labels: Record<string, string> = { top: '上衣廓形', bottom: '下装廓形', material: '材质方向', accessory: '配饰点睛' }
+              const labels: Record<string, string> = { top: '上衣', bottom: '下装', material: '材质', accessory: '配饰' }
               return (
                 <div key={key} className="p-3 bg-white rounded-xl border border-[var(--border)]">
                   <div className="text-[10px] text-[var(--warm-gray)] mb-1">{labels[key]}</div>
@@ -669,8 +685,8 @@ export default function ResultsPage() {
 
           {/* Outfit recs — copyable keywords */}
           {style.outfitRecs && style.outfitRecs.length > 0 && (
-            <div className="mb-4">
-              <div className="text-[10px] tracking-[1px] text-[var(--warm-gray)] mb-2">✦ 单品推荐 · 点击复制去淘宝/小红书搜索</div>
+            <div>
+              <div className="text-xs font-medium text-[var(--charcoal)] mb-2">单品关键词 <span className="font-normal text-[var(--warm-gray)]">点击复制去搜索</span></div>
               <div className="flex flex-wrap gap-2">
                 {style.outfitRecs.map((item) => (
                   <CopyKeyword key={item} keyword={item} hint="已复制，去淘宝或小红书搜索" />
@@ -678,35 +694,31 @@ export default function ResultsPage() {
               </div>
             </div>
           )}
-
-          <div className="flex flex-wrap gap-2">
-            {style.styleKeywords.map((k) => (
-              <span key={k} className="px-3 py-1.5 text-xs bg-[var(--gold)] text-white rounded-full">{k}</span>
-            ))}
-          </div>
         </section>
 
         {/* Section 4: Occasions */}
         <section ref={(el) => { sectionRefs.current[4] = el }} className="p-5 bg-[var(--cream)] rounded-3xl border border-[var(--border)] shadow-card scroll-mt-24">
-          <div className="text-[10px] tracking-[2px] text-[var(--gold)] mb-1">场合建议</div>
-          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-4">场合穿搭建议</h2>
+          <h2 className="font-serif text-xl font-medium text-[var(--charcoal)] mb-4">场合穿搭</h2>
 
           <div className="space-y-3">
             {occasions.map((occ) => (
               <div key={occ.occasion} className="p-4 bg-white rounded-2xl border border-[var(--border)]">
-                <div className="text-xs font-medium text-[var(--charcoal)] mb-1.5 flex items-center gap-1.5">
-                  <OccasionIcon occasion={occ.occasion} />
-                  {occ.occasion}
+                {/* Occasion header: icon + name + color dots */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-[var(--charcoal)]">
+                    <OccasionIcon occasion={occ.occasion} />
+                    {occ.occasion}
+                  </div>
+                  <div className="flex gap-1.5">
+                    {occ.colors.map((hex, i) => (
+                      <div key={i} className="w-5 h-5 rounded-full" style={{ backgroundColor: hex }} />
+                    ))}
+                  </div>
                 </div>
-                <div className="text-sm text-[var(--charcoal)] mb-2">{occ.outfit}</div>
-                <div className="flex gap-2 mb-2">
-                  {occ.colors.map((hex, i) => (
-                    <div key={i} className="w-4 h-4 rounded-full border border-[var(--border)]" style={{ backgroundColor: hex }} />
-                  ))}
-                </div>
+                <div className="text-sm text-[var(--charcoal)] leading-relaxed mb-2">{occ.outfit}</div>
                 {occ.logic && (
-                  <div className="text-[10.5px] text-[var(--warm-gray)] leading-relaxed px-3 py-2 bg-[rgba(184,144,96,0.06)] rounded-lg">
-                    <span className="text-[var(--gold)] font-medium">搭配逻辑：</span>{occ.logic}
+                  <div className="text-[11px] text-[var(--warm-gray)] leading-relaxed">
+                    {occ.logic}
                   </div>
                 )}
               </div>
@@ -722,17 +734,11 @@ export default function ResultsPage() {
 
         {/* Action buttons */}
         <div className="flex flex-col gap-3">
-          <button
-            onClick={handleShare}
-            className="w-full py-4 bg-[var(--charcoal)] text-white rounded-2xl text-sm font-medium tracking-wider hover:bg-[var(--gold)] transition-colors"
-          >
-            保存报告图片
-          </button>
           <Link
             href="/ootd"
-            className="w-full py-4 bg-[var(--cream)] text-[var(--charcoal)] border border-[var(--border)] rounded-2xl text-sm font-medium tracking-wider text-center hover:border-[var(--gold)] transition-colors"
+            className="w-full py-4 bg-[var(--charcoal)] text-white rounded-2xl text-sm font-medium text-center hover:bg-[var(--gold)] transition-colors"
           >
-            ✦ 诊断我的衣橱 → OOTD 搭配
+            诊断我的衣橱
           </Link>
           <Link
             href="/upload"
